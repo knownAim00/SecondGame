@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sky Stacker</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="game-container">
+        <div id="start-screen">
+            <h1>Sky Stacker</h1>
+            <button id="start-btn">Start Game</button>
+        </div>
+        <canvas id="game-canvas"></canvas>
+        <div id="ui-container">
+            <div id="score">Score: 0</div>
+            <div id="floors">Floors: 0</div>
+        </div>
+        <div id="game-over">
+            GAME OVER
+            <div id="final-score">Score: 0</div>
+            <button id="restart-btn">Restart</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.18.0/matter.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

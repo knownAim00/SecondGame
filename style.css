@@ -1,0 +1,244 @@
+body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    background-size: 600% 600%;
+    animation: backgroundMove 20s ease infinite;
+    font-family: 'Orbitron', 'Courier New', monospace;
+    color: #0ff;
+    position: relative;
+}
+
+/* Анимация фона */
+@keyframes backgroundMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Контейнер игры */
+#game-container {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    background: rgba(0, 0, 0, 0.85);
+    border: 3px solid #0ff;
+    box-shadow: 0 0 30px #0ff, 0 0 60px #00f inset;
+    overflow: hidden;
+    border-radius: 20px;
+}
+
+/* Канвас */
+#game-canvas {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+    display: none; /* Initially hidden */
+}
+
+/* UI сверху */
+#ui-container {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 2px solid #0ff;
+    font-size: 18px;
+    text-shadow: 0 0 5px #0ff;
+    display: none; /* Initially hidden */
+}
+
+/* GAME OVER экран */
+#game-over {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    background: rgba(0, 0, 0, 0.85);
+    border: 4px solid #f00;
+    padding: 30px 50px;
+    color: #f00;
+    font-size: 48px;
+    font-weight: bold;
+    text-shadow: 0 0 10px #f00, 0 0 20px #f00;
+    box-shadow: 0 0 30px #f00, inset 0 0 30px #f00;
+    border-radius: 15px;
+    z-index: 20;
+    display: none; 
+    flex-direction: column; /* Stack items vertically */
+    align-items: center; /* Center items horizontally */
+    text-align: center; /* Ensure text itself is centered */
+    animation: popup 0.5s ease-out forwards;
+    /* Ensure initial state for animation is correct if display: none is removed */
+    opacity: 0; /* Start transparent for animation */
+    transform: translate(-50%, -50%) scale(0.8); /* Start smaller for animation */
+}
+
+/* Анимация появления окна */
+@keyframes popup {
+    0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+/* Финальный счёт */
+#final-score {
+    margin-top: 20px;
+    color: #0ff;
+    font-size: 24px;
+    text-shadow: 0 0 5px #0ff;
+}
+
+/* Кнопка рестарта */
+#restart-btn {
+    margin-top: 20px;
+    padding: 12px 24px;
+    font-size: 18px;
+    font-family: 'Orbitron', 'Courier New', monospace;
+    background: linear-gradient(90deg, #0ff, #00f);
+    border: none;
+    color: #000;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 0 15px #0ff, 0 0 30px #00f inset;
+    transition: 0.3s ease;
+    display: block;         /* <<< Добавляем! */
+    margin: 20px auto 0 auto; /* <<< Центрируем! */
+}
+
+#restart-btn:hover {
+    background: linear-gradient(90deg, #00f, #0ff);
+    box-shadow: 0 0 20px #0ff, 0 0 40px #00f inset;
+}
+
+#restart-btn:active {
+    transform: scale(0.95);
+}
+
+/* Высокий рекорд */
+#high-score {
+    margin-top: 8px;
+    font-size: 16px;
+    color: #0ff;
+}
+
+/* Пауза и прочие кнопки */
+#pause-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 8px 16px;
+    font-size: 16px;
+    font-family: 'Orbitron', 'Courier New', monospace;
+    background: transparent;
+    border: 2px solid #0ff;
+    color: #0ff;
+    border-radius: 8px;
+    cursor: pointer;
+    z-index: 10;
+    transition: 0.3s;
+}
+
+#pause-btn:hover {
+    background: #0ff;
+    color: #000;
+}
+
+/* Пауза меню */
+#pause-menu {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.85);
+    border: 3px solid #0ff;
+    padding: 30px 50px;
+    color: #0ff;
+    font-size: 32px;
+    text-align: center;
+    display: none;
+    border-radius: 15px;
+    box-shadow: 0 0 20px #0ff, inset 0 0 20px #00f;
+}
+
+/* Кнопки внутри паузы */
+#pause-menu button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 18px;
+    font-family: 'Orbitron', 'Courier New', monospace;
+    background: #0ff;
+    border: none;
+    color: #000;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 0 10px #0ff;
+    transition: 0.3s;
+}
+
+#pause-menu button:hover {
+    background: #00f;
+    color: #fff;
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 800px) {
+    #game-container {
+        width: 100vw;
+        height: 100vh;
+        border: none;
+        box-shadow: none;
+        border-radius: 0;
+    }
+}
+
+/* Start Screen Styles */
+#start-screen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.85);
+    border: 4px solid #0ff;
+    padding: 40px 60px;
+    color: #0ff;
+    text-align: center;
+    border-radius: 15px;
+    box-shadow: 0 0 30px #0ff, inset 0 0 30px #00f;
+    z-index: 25;
+}
+
+#start-screen h1 {
+    font-size: 4em;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px #000;
+}
+
+#start-screen button {
+    padding: 15px 30px;
+    font-size: 1.5em;
+    background: linear-gradient(90deg, #0ff, #00f);
+    border: none;
+    color: #000;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 0 15px #0ff, 0 0 30px #00f inset;
+    transition: 0.3s ease;
+    font-family: 'Orbitron', 'Courier New', monospace;
+}
+
+#start-screen button:hover {
+    background: linear-gradient(90deg, #00f, #0ff);
+    box-shadow: 0 0 20px #0ff, 0 0 40px #00f inset;
+}
