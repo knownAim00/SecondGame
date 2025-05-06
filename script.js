@@ -1,7 +1,7 @@
 const config = {
     blockWidth: 120,
     blockHeight: 40,
-    craneSpeed: 2,
+    craneSpeed: 3,
     craneSpeedIncrease: 0.2,
     craneSpeedIncreaseThreshold: 5,
     groundLevel: 550,
