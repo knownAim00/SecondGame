@@ -86,6 +86,7 @@ body {
 /* Анимация появления окна */
 @keyframes popup {
     0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+    50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.8; }
     100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
 
@@ -216,15 +217,37 @@ body {
     border-radius: 15px;
     box-shadow: 0 0 30px #0ff, inset 0 0 30px #00f;
     z-index: 25;
+    width: 80%;
+    max-width: 600px;
 }
 
 #start-screen h1 {
     font-size: 4em;
     margin-bottom: 20px;
-    text-shadow: 2px 2px 4px #000;
+    text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+    letter-spacing: 3px;
+    position: relative;
+    animation: glow 2s ease-in-out infinite alternate;
 }
 
-#start-screen button {
+/* Анимация свечения для заголовка */
+@keyframes glow {
+    0% { text-shadow: 0 0 10px #0ff, 0 0 20px #0ff; }
+    100% { text-shadow: 0 0 15px #0ff, 0 0 30px #0ff, 0 0 40px #0ff; }
+}
+
+/* Добавляем небольшое описание игры */
+#game-description {
+    margin-bottom: 30px;
+    color: #89c9ff;
+    font-size: 1.2em;
+    max-width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Улучшенный стиль кнопки старта */
+#start-btn {
     padding: 15px 30px;
     font-size: 1.5em;
     background: linear-gradient(90deg, #0ff, #00f);
@@ -236,9 +259,159 @@ body {
     box-shadow: 0 0 15px #0ff, 0 0 30px #00f inset;
     transition: 0.3s ease;
     font-family: 'Orbitron', 'Courier New', monospace;
+    position: relative;
+    overflow: hidden;
 }
 
-#start-screen button:hover {
+#start-btn:hover {
     background: linear-gradient(90deg, #00f, #0ff);
-    box-shadow: 0 0 20px #0ff, 0 0 40px #00f inset;
+    box-shadow: 0 0 25px #0ff, 0 0 50px #00f inset;
+    transform: scale(1.05);
+}
+
+/* Эффект при нажатии кнопки */
+#start-btn:active {
+    transform: scale(0.95);
+}
+
+/* Эффект блика на кнопке */
+#start-btn::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(45deg);
+    transition: 0.6s;
+    opacity: 0;
+}
+
+#start-btn:hover::before {
+    left: 100%;
+    opacity: 0.5;
+}
+
+/* Стили для подключаемого контейнера на стартовом экране */
+#start-screen-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+    border-radius: 12px; /* Чтобы фон не выходил за пределы скругленных углов */
+}
+
+/* Основные стили для плавающих блоков (дополнительные стили задаются через JS) */
+.floating-block {
+    position: absolute;
+    opacity: 0.2;
+    transition: opacity 0.3s;
+}
+
+.floating-block:hover {
+    opacity: 0.6;
+}
+
+/* Добавляем небольшие цветные линии внизу стартового экрана, как в портовых контейнерах */
+.dock-lines {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 6px;
+    display: flex;
+    overflow: hidden;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+.dock-line {
+    height: 100%;
+    flex-grow: 1;
+}
+
+/* Анимация волны для док-линий */
+@keyframes wave {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Создаем движущийся световой эффект */
+.light-beam {
+    position: absolute;
+    bottom: 10px;
+    width: 30%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.8), transparent);
+    animation: wave 8s linear infinite;
+}
+#game-background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: url('picture1.png');
+    background-size: cover; 
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 1; /* Фон на заднем плане */
+    opacity: 0.2; /* Делаем фон менее заметным */
+    pointer-events: none;
+}
+
+/* Важно: меняем z-index и прозрачность канваса */
+#game-canvas {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+    display: none; /* Initially hidden */
+    z-index: 5; /* Выше фона */
+    opacity: 1 !important; /* Принудительно делаем канвас непрозрачным */
+    background-color: transparent;
+    pointer-events: auto;
+}
+
+/* Делаем контейнер игры прозрачным, чтобы фон был виден */
+#game-container {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    background: rgba(0, 0, 0, 0.85);
+    border: 3px solid #0ff;
+    box-shadow: 0 0 30px #0ff, 0 0 60px #00f inset;
+    overflow: hidden;
+    border-radius: 20px;
+}
+
+/* Прочие элементы остаются без изменений */
+#ui-container {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 2px solid #0ff;
+    font-size: 18px;
+    text-shadow: 0 0 5px #0ff;
+    display: none; /* Initially hidden */
+}
+
+/* Добавляем стили, чтобы all canvas elements были непрозрачными */
+canvas {
+    opacity: 1 !important;
+}
+   /* Inline стили для гарантированного приоритета над другими стилями */
+   #game-canvas {
+    opacity: 1 !important;
+    background-color: transparent !important;
+}
+/* Элементы Matter.js должны быть непрозрачными */
+.matter-body {
+    opacity: 1 !important;
 }
