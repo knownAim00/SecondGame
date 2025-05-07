@@ -6,13 +6,31 @@
     <title>Sky Stacker</title>
     <link rel="stylesheet" href="style.css" />
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+
 </head>
 <body>
-    <div id="game-container">
-        <div id="start-screen">
-            <h1>Sky Stacker</h1>
-            <button id="start-btn">Start Game</button>
+    <div id="start-screen">
+        <!-- Фон будет создан с помощью JavaScript -->
+        <h1>Sky Stacker</h1>
+        <div id="game-description">
+            Стройте башню из грузовых контейнеров в футуристическом порту. 
+            Чем выше башня, тем больше очков!
         </div>
+        <button id="start-btn">Start Game</button>
+        
+        <!-- Декоративные элементы -->
+        <div class="dock-lines">
+            <div class="dock-line" style="background-color: #3498db;"></div>
+            <div class="dock-line" style="background-color: #e74c3c;"></div>
+            <div class="dock-line" style="background-color: #f1c40f;"></div>
+            <div class="dock-line" style="background-color: #2ecc71;"></div>
+            <div class="dock-line" style="background-color: #9b59b6;"></div>
+            <div class="dock-line" style="background-color: #e67e22;"></div>
+        </div>
+        <div class="light-beam"></div>
+    </div>
+    <div id="game-container">
+        <div id="game-background"></div>
         <canvas id="game-canvas"></canvas>
         <div id="ui-container">
             <div id="score">Score: 0</div>
@@ -27,5 +45,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.18.0/matter.min.js"></script>
     <script src="script.js"></script>
+    <script src = "script2.js"></script>
 </body>
 </html>
