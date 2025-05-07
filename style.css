@@ -340,15 +340,6 @@ body {
     100% { transform: translateX(100%); }
 }
 
-/* Создаем движущийся световой эффект */
-.light-beam {
-    position: absolute;
-    bottom: 10px;
-    width: 30%;
-    height: 3px;
-    background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.8), transparent);
-    animation: wave 8s linear infinite;
-}
 #game-background {
     position: absolute;
     width: 100%;
