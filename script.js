@@ -142,13 +142,13 @@ function loadSounds() {
 function getRandomColor() {
     // Новая яркая палитра, больше подходящая для морского порта
     const blockColors = [
-        {fill: '#3498db', stroke: '#2980b9'}, // Синий
-        {fill: '#e74c3c', stroke: '#c0392b'}, // Красный
-        {fill: '#f1c40f', stroke: '#f39c12'}, // Жёлтый
-        {fill: '#2ecc71', stroke: '#27ae60'}, // Зелёный
-        {fill: '#9b59b6', stroke: '#8e44ad'}, // Фиолетовый
-        {fill: '#e67e22', stroke: '#d35400'}, // Оранжевый
-        {fill: '#1abc9c', stroke: '#16a085'}, // Бирюзовый
+        {fill: '#225D6C', stroke: '#183E48'}, // Тусклый неоновый голубой
+        {fill: '#6B1E5E', stroke: '#4A1442'}, // Глубокий фиолетовый неон
+        {fill: '#3D6B3A', stroke: '#284A27'}, // Зелёный с тусклым свечением
+        {fill: '#6C5F28', stroke: '#4A411B'}, // Мутный неоново-жёлтый
+        {fill: '#6A2B2B', stroke: '#471D1D'}, // Приглушённый красный
+        {fill: '#2A5B66', stroke: '#1B3E45'}, // Лазурный с металлическим оттенком
+        {fill: '#7A4B26', stroke: '#56361A'}, // Темно-оранжевый
     ];
     return blockColors[Math.floor(Math.random() * blockColors.length)];
 }
