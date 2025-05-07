@@ -6,7 +6,6 @@ const config = {
     craneSpeedIncreaseThreshold: 5,
     groundLevel: 550,
     perfectDropBonus: 50,
-    blockColors: ['#e74c3c', '#3498db', '#2ecc71', '#f1c40f', '#9b59b6', '#1abc9c'],
     wobbleThreshold: 2.5, // Degrees
     craneWidth: 120,
     craneHeight: 80,
@@ -81,7 +80,20 @@ const render = Render.create({
         width: canvas.width,
         height: canvas.height,
         wireframes: false,
-        background: '#87CEEB'
+        background: '#000000', // Прозрачный фон, но объекты непрозрачные
+        showSleeping: false,
+        showDebug: false,
+        showBroadphase: false,
+        showBounds: false,
+        showVelocity: false,
+        showCollisions: false,
+        showSeparations: false,
+        showAxes: false,
+        showPositions: false,
+        showAngleIndicator: false,
+        showIds: false,
+        showShadows: false
+        
     }
 });
 
@@ -91,13 +103,27 @@ const ground = Bodies.rectangle(
     config.groundLevel,
     canvas.width,
     20,
-    { isStatic: true, render: { fillStyle: '#394240' } }
+    { 
+        isStatic: true, 
+        render: { 
+            fillStyle: '#3a566e',
+            strokeStyle: '#89c9ff',
+            lineWidth: 3,
+            opacity: 1
+        },
+        collisionFilter: {
+            group: 1,
+            category: 1,
+            mask: 1
+        }
+    }
 );
+
 
 World.add(engine.world, ground);
 
 // Start the engine and renderer
-Engine.run(engine);
+Matter.Runner.run(engine);
 Render.run(render);
 
 // Load sounds
@@ -114,17 +140,29 @@ function loadSounds() {
 
 // Get random color for blocks
 function getRandomColor() {
-    return config.blockColors[Math.floor(Math.random() * config.blockColors.length)];
+    // Новая яркая палитра, больше подходящая для морского порта
+    const blockColors = [
+        {fill: '#3498db', stroke: '#2980b9'}, // Синий
+        {fill: '#e74c3c', stroke: '#c0392b'}, // Красный
+        {fill: '#f1c40f', stroke: '#f39c12'}, // Жёлтый
+        {fill: '#2ecc71', stroke: '#27ae60'}, // Зелёный
+        {fill: '#9b59b6', stroke: '#8e44ad'}, // Фиолетовый
+        {fill: '#e67e22', stroke: '#d35400'}, // Оранжевый
+        {fill: '#1abc9c', stroke: '#16a085'}, // Бирюзовый
+    ];
+    return blockColors[Math.floor(Math.random() * blockColors.length)];
 }
 
 // Create a new block on the crane
 function createBlockOnCrane() {
+    const colorData = getRandomColor();
     blockOnCrane = {
         x: craneX,
-    y: 50, 
-    width: config.blockWidth,
-    height: config.blockHeight,
-    color: getRandomColor()
+        y: 50, 
+        width: config.blockWidth,
+        height: config.blockHeight,
+        fill: colorData.fill,
+        stroke: colorData.stroke
     };
 }
 
@@ -160,7 +198,7 @@ function dropBlock() {
     
     // Check if this will be a valid placement before creating the block
     if (!isBlockStacked(blockOnCrane.x, blockOnCrane.y)) {
-        
+        // Функциональность была пустой, оставляем как есть
     }
     
     const block = Bodies.rectangle(
@@ -172,10 +210,19 @@ function dropBlock() {
             restitution: 0.1,
             friction: 0.8,
             render: {
-                fillStyle: blockOnCrane.color
+                fillStyle: blockOnCrane.fill,
+                strokeStyle: blockOnCrane.stroke,
+                lineWidth: 2,
+                opacity: 1 // Явно задаем полную непрозрачность
+            },
+            collisionFilter: {
+                group: 1,
+                category: 1,
+                mask: 1
             }
         }
     );
+ 
  
     sounds.drop.play();
     
@@ -285,42 +332,75 @@ function resetGame() {
 
 // Draw the crane properly
 function drawCrane(ctx) {
+    // Полностью отменяем прозрачность
+    ctx.globalAlpha = 1.0;
+    
     const craneTopY = 20;
     const hookLength = 30;
 
-    ctx.fillStyle = "#555";
-    ctx.fillRect(0, craneTopY, canvas.width, 8);
+    // Убираем тени, так как они могут влиять на прозрачность
+    ctx.shadowBlur = 0;
+    ctx.shadowColor = 'transparent';
 
-    ctx.fillStyle = "#333";
-    ctx.fillRect(craneX - 20, craneTopY - 15, 40, 15);
+    // Основная балка крана (горизонтальная)
+    ctx.fillStyle = "#566d86";
+    ctx.fillRect(0, craneTopY, canvas.width, 12);
+    
+    // Металлический эффект - блики 
+    ctx.fillStyle = "#89c9ff";
+    ctx.fillRect(0, craneTopY + 2, canvas.width, 2);
 
-    ctx.fillStyle = "#444";
-    ctx.fillRect(craneX - 5, craneTopY, 10, 15);
+    // Кабина крана
+    ctx.fillStyle = "#2c3e50";
+    ctx.fillRect(craneX - 25, craneTopY - 20, 50, 20);
+    
+    // Окно кабины
+    ctx.fillStyle = "#3498db";
+    ctx.fillRect(craneX - 15, craneTopY - 16, 30, 12);
+    
+    // Отражение света в окнах
+    ctx.fillStyle = "#a7d4ff";
+    ctx.fillRect(craneX - 12, craneTopY - 16, 5, 7);
 
-    ctx.strokeStyle = "#222";
-    ctx.lineWidth = 2;
+    // Механизм крана
+    ctx.fillStyle = "#34495e";
+    ctx.fillRect(craneX - 8, craneTopY, 16, 20);
+    
+    // Трос
+    ctx.strokeStyle = "#bdc3c7";
+    ctx.lineWidth = 3;
     ctx.beginPath();
-    ctx.moveTo(craneX, craneTopY + 15);
+    ctx.moveTo(craneX, craneTopY + 20);
     ctx.lineTo(craneX, blockOnCrane ? blockOnCrane.y - blockOnCrane.height / 2 : craneTopY + hookLength);
     ctx.stroke();
 
-    if (!blockOnCrane) {
-        ctx.fillStyle = "#222";
-        ctx.beginPath();
-        ctx.moveTo(craneX - 5, craneTopY + hookLength);
-        ctx.lineTo(craneX + 5, craneTopY + hookLength);
-        ctx.lineTo(craneX, craneTopY + hookLength + 5);
-        ctx.closePath();
-        ctx.fill();
+    // Если блок есть - рисуем его
+    if (blockOnCrane) {
+        const x = blockOnCrane.x - blockOnCrane.width / 2;
+        const y = blockOnCrane.y - blockOnCrane.height / 2;
+        
+        // Отключаем любые тени
+        ctx.shadowColor = 'transparent';
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetY = 0;
+        
+        // Основной блок - полностью непрозрачный
+        ctx.fillStyle = blockOnCrane.fill;
+        ctx.fillRect(x, y, blockOnCrane.width, blockOnCrane.height);
+        
+        // Обводка
+        ctx.strokeStyle = blockOnCrane.stroke;
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x, y, blockOnCrane.width, blockOnCrane.height);
+        
+        // Блики для эффекта металлического контейнера
+        ctx.fillStyle = 'rgba(255, 255, 255, 1.0)'; // Полная непрозрачность
+        ctx.fillRect(x + 10, y + 5, blockOnCrane.width - 20, 5);
+        
+        // Детали контейнера - ребра жесткости
+        ctx.fillStyle = blockOnCrane.stroke;
+        ctx.fillRect(x, y + blockOnCrane.height - 8, blockOnCrane.width, 4);
     }
-
-    ctx.fillStyle = "#222";
-    ctx.beginPath();
-    ctx.arc(craneX - 15, craneTopY - 15, 5, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.arc(craneX + 15, craneTopY - 15, 5, 0, Math.PI * 2);
-    ctx.fill();
 }
 
 
@@ -379,12 +459,18 @@ function gameLoop() {
             }
         }
     }
-    
+    droppedBlocks.forEach(block => {
+        block.render.opacity = 1;
+    });
+    ground.render.opacity = 1;
     // Draw crane
     const ctx = render.context;
     ctx.save();
     ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset transformation - draw in screen coordinates
-    drawCrane(ctx);                     // Draw crane and cable without offset
+    
+    
+    ctx.globalAlpha = 1.0;
+    drawCrane(ctx);              // Draw crane and cable without offset
     
     // Draw block on crane in screen coordinates (not affected by camera)
     if (blockOnCrane) {
@@ -407,7 +493,8 @@ render.bounds.min.x = 0;
 render.bounds.max.x = canvas.width;
 
 // Обновляем трансформацию контекста канваса
-render.context.setTransform(1, 0, 0, 1, 0, cameraOffsetY);///////////////////////////
+render.context.globalAlpha = 1.0;
+    render.context.setTransform(1, 0, 0, 1, 0, cameraOffsetY);
     
     requestAnimationFrame(gameLoop);
 }
@@ -420,6 +507,7 @@ function initGame() {
         document.getElementById('start-screen').style.display = 'none';
         canvas.style.display = 'block';
         document.getElementById('ui-container').style.display = 'block';
+        document.getElementById('game-background').style.display = 'block'; // Убедимся, что фон отображается
     });
     
     resizeGame();
