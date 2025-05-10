@@ -158,3 +158,54 @@ function createStarryBackground(container) {
 window.addEventListener('DOMContentLoaded', function() {
     createStartScreenBackground();
 });
+function renderBlockDetails(ctx) {
+    droppedBlocks.forEach(block => {
+        if (block.render && block.details) {
+            // Save context to preserve transformations
+            ctx.save();
+            
+            // Translate and rotate to match the block's position and angle
+            ctx.translate(block.position.x, block.position.y);
+            ctx.rotate(block.angle);
+            
+            const width = block.render.width || config.blockWidth;
+            const height = block.render.height || config.blockHeight;
+            
+            // Горизонтальные линии энергии
+            ctx.fillStyle = block.details;
+            ctx.fillRect(-width/2 + 10, -height/2 + 5, width - 20, 3);
+            ctx.fillRect(-width/2 + 10, height/2 - 8, width - 20, 3);
+            
+            // Добавляем "порты" или "панели" по бокам
+            const portSize = 8;
+            
+            // Левый порт
+            ctx.fillStyle = block.render.strokeStyle;
+            ctx.fillRect(-width/2 + 2, -portSize/2, portSize, portSize);
+            ctx.fillStyle = block.details;
+            ctx.fillRect(-width/2 + 3, -portSize/2 + 1, portSize - 2, portSize - 2);
+            
+            // Правый порт
+            ctx.fillStyle = block.render.strokeStyle;
+            ctx.fillRect(width/2 - portSize - 2, -portSize/2, portSize, portSize);
+            ctx.fillStyle = block.details;
+            ctx.fillRect(width/2 - portSize - 1, -portSize/2 + 1, portSize - 2, portSize - 2);
+            
+            // Индикатор энергии в центре
+            const indicatorWidth = 20;
+            const indicatorHeight = 6;
+            
+            ctx.fillStyle = block.render.strokeStyle;
+            ctx.fillRect(-indicatorWidth/2, -indicatorHeight/2, indicatorWidth, indicatorHeight);
+            
+            // Пульсирующий эффект индикатора - используем синус для анимации
+            const pulse = Math.sin((Date.now() + block.id*100) / 200) * 0.5 + 0.5; // значение от 0 до 1
+            const pulseWidth = indicatorWidth * (0.2 + 0.6 * pulse);
+            
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(-indicatorWidth/2, -indicatorHeight/2, pulseWidth, indicatorHeight);
+            
+            ctx.restore();
+        }
+    });
+}
