@@ -140,20 +140,18 @@ function loadSounds() {
 
 // Get random color for blocks
 function getRandomColor() {
-    // Новая яркая палитра, больше подходящая для морского порта
+    // Футуристичная цветовая палитра космических контейнеров
     const blockColors = [
-        {fill: '#225D6C', stroke: '#183E48'}, // Тусклый неоновый голубой
-        {fill: '#6B1E5E', stroke: '#4A1442'}, // Глубокий фиолетовый неон
-        {fill: '#3D6B3A', stroke: '#284A27'}, // Зелёный с тусклым свечением
-        {fill: '#6C5F28', stroke: '#4A411B'}, // Мутный неоново-жёлтый
-        {fill: '#6A2B2B', stroke: '#471D1D'}, // Приглушённый красный
-        {fill: '#2A5B66', stroke: '#1B3E45'}, // Лазурный с металлическим оттенком
-        {fill: '#7A4B26', stroke: '#56361A'}, // Темно-оранжевый
+        {fill: '#1e3799', stroke: '#0c2461', details: '#4a69bd'}, // Глубокий космический синий
+        {fill: '#6a0572', stroke: '#380036', details: '#9980FA'}, // Футуристичный фиолетовый
+        {fill: '#009432', stroke: '#006266', details: '#7bed9f'}, // Неоновый зеленый
+        {fill: '#1289A7', stroke: '#0652DD', details: '#74b9ff'}, // Голографический синий
+        {fill: '#833471', stroke: '#6F1E51', details: '#FDA7DF'}, // Квантовый пурпурный
+        {fill: '#EE5A24', stroke: '#D980FA', details: '#fad390'}, // Космический оранжевый
+        {fill: '#12CBC4', stroke: '#0652DD', details: '#C4E538'}  // Бирюзовый неон
     ];
     return blockColors[Math.floor(Math.random() * blockColors.length)];
 }
-
-// Create a new block on the crane
 function createBlockOnCrane() {
     const colorData = getRandomColor();
     blockOnCrane = {
@@ -162,7 +160,8 @@ function createBlockOnCrane() {
         width: config.blockWidth,
         height: config.blockHeight,
         fill: colorData.fill,
-        stroke: colorData.stroke
+        stroke: colorData.stroke,
+        details: colorData.details // Добавляем цвет для деталей
     };
 }
 
@@ -213,8 +212,12 @@ function dropBlock() {
                 fillStyle: blockOnCrane.fill,
                 strokeStyle: blockOnCrane.stroke,
                 lineWidth: 2,
-                opacity: 1 // Явно задаем полную непрозрачность
+                opacity: 1, // Явно задаем полную непрозрачность
+                width: blockOnCrane.width,  // Сохраняем размеры для правильной отрисовки деталей
+                height: blockOnCrane.height
             },
+            // Сохраняем цвет деталей для использования в обработчике рендера
+            details: blockOnCrane.details,
             collisionFilter: {
                 group: 1,
                 category: 1,
@@ -222,7 +225,6 @@ function dropBlock() {
             }
         }
     );
- 
  
     sounds.drop.play();
     
@@ -235,16 +237,16 @@ function dropBlock() {
         score += config.perfectDropBonus;
         sounds.perfect.play();
         
-        // Create visual effect for perfect drop
+        // Create visual effect for perfect drop - более футуристичный
         const perfectEffect = document.createElement('div');
         perfectEffect.textContent = '+' + config.perfectDropBonus;
         perfectEffect.style.position = 'absolute';
         perfectEffect.style.left = blockOnCrane.x + 'px';
         perfectEffect.style.top = (blockOnCrane.y + cameraOffsetY) + 'px';
-        perfectEffect.style.color = '#FFD700';
+        perfectEffect.style.color = '#00ffff';
         perfectEffect.style.fontSize = '24px';
         perfectEffect.style.fontWeight = 'bold';
-        perfectEffect.style.textShadow = '2px 2px 4px rgba(0, 0, 0, 0.5)';
+        perfectEffect.style.textShadow = '0 0 8px #00ffff, 0 0 12px #00ffff';
         perfectEffect.style.zIndex = '150';
         perfectEffect.style.transition = 'transform 1s, opacity 1s';
         perfectEffect.style.opacity = '1';
@@ -252,7 +254,7 @@ function dropBlock() {
         gameContainer.appendChild(perfectEffect);
         
         setTimeout(() => {
-            perfectEffect.style.transform = 'translateY(-50px)';
+            perfectEffect.style.transform = 'translateY(-50px) scale(1.5)';
             perfectEffect.style.opacity = '0';
         }, 50);
         
@@ -264,11 +266,12 @@ function dropBlock() {
     // Update last block position for the next drop
     lastBlockX = blockOnCrane.x;
     lastBlockY = lastBlockY - config.blockHeight; // Move up for the next block
+    
     // Поднимаем камеру, если башня достигла середины экрана
-const thresholdY = canvas.height / 2;
-if (lastBlockY + cameraOffsetY < thresholdY) {
-    cameraTargetY = thresholdY - lastBlockY;
-}
+    const thresholdY = canvas.height / 2;
+    if (lastBlockY + cameraOffsetY < thresholdY) {
+        cameraTargetY = thresholdY - lastBlockY;
+    }
     
     blockOnCrane = null;
     
@@ -287,6 +290,8 @@ if (lastBlockY + cameraOffsetY < thresholdY) {
     // Create new block on crane
     createBlockOnCrane();
 }
+
+
 
 // Update UI elements
 function updateUI() {
@@ -350,58 +355,114 @@ function drawCrane(ctx) {
     ctx.fillStyle = "#89c9ff";
     ctx.fillRect(0, craneTopY + 2, canvas.width, 2);
 
-    // Кабина крана
+    // Кабина крана - делаем более футуристичной
     ctx.fillStyle = "#2c3e50";
     ctx.fillRect(craneX - 25, craneTopY - 20, 50, 20);
     
-    // Окно кабины
-    ctx.fillStyle = "#3498db";
+    // Окно кабины - добавляем голографический эффект
+    const gradient = ctx.createLinearGradient(craneX - 15, craneTopY - 16, craneX + 15, craneTopY - 4);
+    gradient.addColorStop(0, "#3498db");
+    gradient.addColorStop(0.5, "#2ecc71");
+    gradient.addColorStop(1, "#9b59b6");
+    ctx.fillStyle = gradient;
     ctx.fillRect(craneX - 15, craneTopY - 16, 30, 12);
     
-    // Отражение света в окнах
-    ctx.fillStyle = "#a7d4ff";
+    // Отражение света в окнах - делаем более ярким
+    ctx.fillStyle = "#ffffff";
     ctx.fillRect(craneX - 12, craneTopY - 16, 5, 7);
 
-    // Механизм крана
+    // Механизм крана - более технологичный вид
     ctx.fillStyle = "#34495e";
     ctx.fillRect(craneX - 8, craneTopY, 16, 20);
     
-    // Трос
-    ctx.strokeStyle = "#bdc3c7";
-    ctx.lineWidth = 3;
+    // Добавляем светящиеся индикаторы на механизм
+    ctx.fillStyle = "#e74c3c";
+    ctx.beginPath();
+    ctx.arc(craneX - 4, craneTopY + 8, 2, 0, Math.PI * 2);
+    ctx.fill();
+    
+    ctx.fillStyle = "#2ecc71";
+    ctx.beginPath();
+    ctx.arc(craneX + 4, craneTopY + 8, 2, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // Трос - делаем его светящимся
+    ctx.strokeStyle = "#ecf0f1";
+    ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(craneX, craneTopY + 20);
     ctx.lineTo(craneX, blockOnCrane ? blockOnCrane.y - blockOnCrane.height / 2 : craneTopY + hookLength);
     ctx.stroke();
+    
+    // Добавляем свечение вокруг троса
+    ctx.shadowColor = "#89c9ff";
+    ctx.shadowBlur = 5;
+    ctx.strokeStyle = "#89c9ff";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(craneX, craneTopY + 20);
+    ctx.lineTo(craneX, blockOnCrane ? blockOnCrane.y - blockOnCrane.height / 2 : craneTopY + hookLength);
+    ctx.stroke();
+    
+    // Убираем свечение для остальных элементов
+    ctx.shadowColor = 'transparent';
+    ctx.shadowBlur = 0;
 
-    // Если блок есть - рисуем его
+    // Если блок есть - рисуем его как футуристичный контейнер
     if (blockOnCrane) {
         const x = blockOnCrane.x - blockOnCrane.width / 2;
         const y = blockOnCrane.y - blockOnCrane.height / 2;
-        
-        // Отключаем любые тени
-        ctx.shadowColor = 'transparent';
-        ctx.shadowBlur = 0;
-        ctx.shadowOffsetY = 0;
         
         // Основной блок - полностью непрозрачный
         ctx.fillStyle = blockOnCrane.fill;
         ctx.fillRect(x, y, blockOnCrane.width, blockOnCrane.height);
         
-        // Обводка
+        // Голографическая обводка
         ctx.strokeStyle = blockOnCrane.stroke;
         ctx.lineWidth = 2;
         ctx.strokeRect(x, y, blockOnCrane.width, blockOnCrane.height);
         
-        // Блики для эффекта металлического контейнера
-        ctx.fillStyle = 'rgba(255, 255, 255, 1.0)'; // Полная непрозрачность
-        ctx.fillRect(x + 10, y + 5, blockOnCrane.width - 20, 5);
+        // Добавляем футуристичные детали
         
-        // Детали контейнера - ребра жесткости
+        // Горизонтальные линии энергии
+        ctx.fillStyle = blockOnCrane.details;
+        ctx.fillRect(x + 10, y + 5, blockOnCrane.width - 20, 3);
+        ctx.fillRect(x + 10, y + blockOnCrane.height - 8, blockOnCrane.width - 20, 3);
+        
+        // Добавляем "порты" или "панели" по бокам
+        const portSize = 8;
+        const portY = y + (blockOnCrane.height - portSize) / 2;
+        
+        // Левый порт
         ctx.fillStyle = blockOnCrane.stroke;
-        ctx.fillRect(x, y + blockOnCrane.height - 8, blockOnCrane.width, 4);
+        ctx.fillRect(x + 2, portY, portSize, portSize);
+        ctx.fillStyle = blockOnCrane.details;
+        ctx.fillRect(x + 3, portY + 1, portSize - 2, portSize - 2);
+        
+        // Правый порт
+        ctx.fillStyle = blockOnCrane.stroke;
+        ctx.fillRect(x + blockOnCrane.width - portSize - 2, portY, portSize, portSize);
+        ctx.fillStyle = blockOnCrane.details;
+        ctx.fillRect(x + blockOnCrane.width - portSize - 1, portY + 1, portSize - 2, portSize - 2);
+        
+        // Индикатор энергии в центре
+        const indicatorWidth = 20;
+        const indicatorHeight = 6;
+        const indicatorX = x + (blockOnCrane.width - indicatorWidth) / 2;
+        const indicatorY = y + (blockOnCrane.height - indicatorHeight) / 2;
+        
+        ctx.fillStyle = blockOnCrane.stroke;
+        ctx.fillRect(indicatorX, indicatorY, indicatorWidth, indicatorHeight);
+        
+        // Пульсирующий эффект индикатора - используем синус для анимации
+        const pulse = Math.sin(Date.now() / 200) * 0.5 + 0.5; // значение от 0 до 1
+        const pulseWidth = indicatorWidth * (0.2 + 0.6 * pulse);
+        
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(indicatorX, indicatorY, pulseWidth, indicatorHeight);
     }
 }
+
 
 
 // Main game loop
@@ -459,42 +520,41 @@ function gameLoop() {
             }
         }
     }
+    
+    // Убеждаемся, что все блоки непрозрачные
     droppedBlocks.forEach(block => {
         block.render.opacity = 1;
     });
     ground.render.opacity = 1;
-    // Draw crane
+    
+    // Плавное движение камеры к цели
+    cameraOffsetY += (cameraTargetY - cameraOffsetY) * 0.05;
+
+    // Смещаем рендер вверх
+    render.bounds.min.y = -cameraOffsetY;
+    render.bounds.max.y = canvas.height - cameraOffsetY;
+    render.bounds.min.x = 0;
+    render.bounds.max.x = canvas.width;
+    
+    // Обновляем трансформацию контекста канваса для физического движка
+    render.context.globalAlpha = 1.0;
+    render.context.setTransform(1, 0, 0, 1, 0, cameraOffsetY);
+    
+    // Draw crane (в экранных координатах)
     const ctx = render.context;
     ctx.save();
     ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset transformation - draw in screen coordinates
     
-    
     ctx.globalAlpha = 1.0;
     drawCrane(ctx);              // Draw crane and cable without offset
     
-    // Draw block on crane in screen coordinates (not affected by camera)
-    if (blockOnCrane) {
-        ctx.fillStyle = blockOnCrane.color;
-        ctx.fillRect(
-            blockOnCrane.x - blockOnCrane.width / 2,
-            blockOnCrane.y - blockOnCrane.height / 2,
-            blockOnCrane.width,
-            blockOnCrane.height
-        );
-    }
     ctx.restore();
-    // Плавное движение камеры к цели
-cameraOffsetY += (cameraTargetY - cameraOffsetY) * 0.05;
-
-// Смещаем рендер вверх
-render.bounds.min.y = -cameraOffsetY;
-render.bounds.max.y = canvas.height - cameraOffsetY;
-render.bounds.min.x = 0;
-render.bounds.max.x = canvas.width;
-
-// Обновляем трансформацию контекста канваса
-render.context.globalAlpha = 1.0;
-    render.context.setTransform(1, 0, 0, 1, 0, cameraOffsetY);
+    
+    // Отрисовываем детали на упавших блоках (после отрисовки блоков движком)
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, cameraOffsetY);
+    renderBlockDetails(ctx);
+    ctx.restore();
     
     requestAnimationFrame(gameLoop);
 }
@@ -507,8 +567,13 @@ function initGame() {
         document.getElementById('start-screen').style.display = 'none';
         canvas.style.display = 'block';
         document.getElementById('ui-container').style.display = 'block';
-        document.getElementById('game-background').style.display = 'block'; // Убедимся, что фон отображается
+        document.getElementById('game-background').style.display = 'block';
     });
+    
+    // Установка настроек рендера для более футуристичного вида
+    render.options.wireframes = false;
+    render.options.background = 'transparent';
+    render.options.showSleeping = false;
     
     resizeGame();
     loadSounds();
