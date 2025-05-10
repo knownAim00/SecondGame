@@ -6,340 +6,72 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    background: linear-gradient(135deg, #0b0b2d, #1a1a5a, #2d0b46);
     background-size: 600% 600%;
-    animation: backgroundMove 20s ease infinite;
-    font-family: 'Orbitron', 'Courier New', monospace;
-    color: #0ff;
+    animation: cosmicBackgroundMove 30s ease infinite;
+    font-family: 'Orbitron', 'Rajdhani', 'Courier New', monospace;
+    color: #00ffea;
     position: relative;
 }
 
-/* Анимация фона */
-@keyframes backgroundMove {
+/* Enhanced cosmic background animation */
+@keyframes cosmicBackgroundMove {
     0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
+    33% { background-position: 100% 25%; }
+    66% { background-position: 25% 100%; }
     100% { background-position: 0% 50%; }
 }
 
-/* Контейнер игры */
-#game-container {
-    position: relative;
-    width: 800px;
-    height: 600px;
-    background: rgba(0, 0, 0, 0.85);
-    border: 3px solid #0ff;
-    box-shadow: 0 0 30px #0ff, 0 0 60px #00f inset;
-    overflow: hidden;
-    border-radius: 20px;
-}
-
-/* Канвас */
-#game-canvas {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    image-rendering: pixelated;
-    display: none; /* Initially hidden */
-}
-
-/* UI сверху */
-#ui-container {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    z-index: 10;
-    background: rgba(0, 0, 0, 0.6);
-    padding: 8px 12px;
-    border-radius: 10px;
-    border: 2px solid #0ff;
-    font-size: 18px;
-    text-shadow: 0 0 5px #0ff;
-    display: none; /* Initially hidden */
-}
-
-/* GAME OVER экран */
-#game-over {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0.8);
-    background: rgba(0, 0, 0, 0.85);
-    border: 4px solid #f00;
-    padding: 30px 50px;
-    color: #f00;
-    font-size: 48px;
-    font-weight: bold;
-    text-shadow: 0 0 10px #f00, 0 0 20px #f00;
-    box-shadow: 0 0 30px #f00, inset 0 0 30px #f00;
-    border-radius: 15px;
-    z-index: 20;
-    display: none; 
-    flex-direction: column; /* Stack items vertically */
-    align-items: center; /* Center items horizontally */
-    text-align: center; /* Ensure text itself is centered */
-    animation: popup 0.5s ease-out forwards;
-    /* Ensure initial state for animation is correct if display: none is removed */
-    opacity: 0; /* Start transparent for animation */
-    transform: translate(-50%, -50%) scale(0.8); /* Start smaller for animation */
-}
-
-/* Анимация появления окна */
-@keyframes popup {
-    0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-    50% { transform: translate(-50%, -50%) scale(1.1); opacity: 0.8; }
-    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
-}
-
-/* Финальный счёт */
-#final-score {
-    margin-top: 20px;
-    color: #0ff;
-    font-size: 24px;
-    text-shadow: 0 0 5px #0ff;
-}
-
-/* Кнопка рестарта */
-#restart-btn {
-    margin-top: 20px;
-    padding: 12px 24px;
-    font-size: 18px;
-    font-family: 'Orbitron', 'Courier New', monospace;
-    background: linear-gradient(90deg, #0ff, #00f);
-    border: none;
-    color: #000;
-    font-weight: bold;
-    border-radius: 10px;
-    cursor: pointer;
-    box-shadow: 0 0 15px #0ff, 0 0 30px #00f inset;
-    transition: 0.3s ease;
-    display: block;         /* <<< Добавляем! */
-    margin: 20px auto 0 auto; /* <<< Центрируем! */
-}
-
-#restart-btn:hover {
-    background: linear-gradient(90deg, #00f, #0ff);
-    box-shadow: 0 0 20px #0ff, 0 0 40px #00f inset;
-}
-
-#restart-btn:active {
-    transform: scale(0.95);
-}
-
-/* Высокий рекорд */
-#high-score {
-    margin-top: 8px;
-    font-size: 16px;
-    color: #0ff;
-}
-
-/* Пауза и прочие кнопки */
-#pause-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    padding: 8px 16px;
-    font-size: 16px;
-    font-family: 'Orbitron', 'Courier New', monospace;
-    background: transparent;
-    border: 2px solid #0ff;
-    color: #0ff;
-    border-radius: 8px;
-    cursor: pointer;
-    z-index: 10;
-    transition: 0.3s;
-}
-
-#pause-btn:hover {
-    background: #0ff;
-    color: #000;
-}
-
-/* Пауза меню */
-#pause-menu {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, 0.85);
-    border: 3px solid #0ff;
-    padding: 30px 50px;
-    color: #0ff;
-    font-size: 32px;
-    text-align: center;
-    display: none;
-    border-radius: 15px;
-    box-shadow: 0 0 20px #0ff, inset 0 0 20px #00f;
-}
-
-/* Кнопки внутри паузы */
-#pause-menu button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    font-size: 18px;
-    font-family: 'Orbitron', 'Courier New', monospace;
-    background: #0ff;
-    border: none;
-    color: #000;
-    font-weight: bold;
-    border-radius: 8px;
-    cursor: pointer;
-    box-shadow: 0 0 10px #0ff;
-    transition: 0.3s;
-}
-
-#pause-menu button:hover {
-    background: #00f;
-    color: #fff;
-}
-
-/* Адаптация для мобильных */
-@media (max-width: 800px) {
-    #game-container {
-        width: 100vw;
-        height: 100vh;
-        border: none;
-        box-shadow: none;
-        border-radius: 0;
-    }
-}
-
-/* Start Screen Styles */
-#start-screen {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, 0.85);
-    border: 4px solid #0ff;
-    padding: 40px 60px;
-    color: #0ff;
-    text-align: center;
-    border-radius: 15px;
-    box-shadow: 0 0 30px #0ff, inset 0 0 30px #00f;
-    z-index: 25;
-    width: 80%;
-    max-width: 600px;
-}
-
-#start-screen h1 {
-    font-size: 4em;
-    margin-bottom: 20px;
-    text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
-    letter-spacing: 3px;
-    position: relative;
-    animation: glow 2s ease-in-out infinite alternate;
-}
-
-/* Анимация свечения для заголовка */
-@keyframes glow {
-    0% { text-shadow: 0 0 10px #0ff, 0 0 20px #0ff; }
-    100% { text-shadow: 0 0 15px #0ff, 0 0 30px #0ff, 0 0 40px #0ff; }
-}
-
-/* Добавляем небольшое описание игры */
-#game-description {
-    margin-bottom: 30px;
-    color: #89c9ff;
-    font-size: 1.2em;
-    max-width: 80%;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-/* Улучшенный стиль кнопки старта */
-#start-btn {
-    padding: 15px 30px;
-    font-size: 1.5em;
-    background: linear-gradient(90deg, #0ff, #00f);
-    border: none;
-    color: #000;
-    font-weight: bold;
-    border-radius: 10px;
-    cursor: pointer;
-    box-shadow: 0 0 15px #0ff, 0 0 30px #00f inset;
-    transition: 0.3s ease;
-    font-family: 'Orbitron', 'Courier New', monospace;
-    position: relative;
-    overflow: hidden;
-}
-
-#start-btn:hover {
-    background: linear-gradient(90deg, #00f, #0ff);
-    box-shadow: 0 0 25px #0ff, 0 0 50px #00f inset;
-    transform: scale(1.05);
-}
-
-/* Эффект при нажатии кнопки */
-#start-btn:active {
-    transform: scale(0.95);
-}
-
-/* Эффект блика на кнопке */
-#start-btn::before {
+/* Add star field */
+body::before {
     content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: rgba(255, 255, 255, 0.2);
-    transform: rotate(45deg);
-    transition: 0.6s;
-    opacity: 0;
-}
-
-#start-btn:hover::before {
-    left: 100%;
-    opacity: 0.5;
-}
-
-/* Стили для подключаемого контейнера на стартовом экране */
-#start-screen-bg {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    overflow: hidden;
-    border-radius: 12px; /* Чтобы фон не выходил за пределы скругленных углов */
-}
-
-/* Основные стили для плавающих блоков (дополнительные стили задаются через JS) */
-.floating-block {
-    position: absolute;
-    opacity: 0.2;
-    transition: opacity 0.3s;
-}
-
-.floating-block:hover {
-    opacity: 0.6;
-}
-
-/* Добавляем небольшие цветные линии внизу стартового экрана, как в портовых контейнерах */
-.dock-lines {
-    position: absolute;
+    right: 0;
     bottom: 0;
+    background-image: 
+        radial-gradient(1px 1px at 25% 35%, white, transparent),
+        radial-gradient(1px 1px at 50% 50%, rgba(255,255,255,0.8), transparent),
+        radial-gradient(2px 2px at 75% 15%, rgba(255,255,255,0.7), transparent),
+        radial-gradient(2px 2px at 15% 65%, rgba(255,255,255,0.9), transparent),
+        radial-gradient(1px 1px at 85% 75%, rgba(255,255,255,0.6), transparent);
+    background-size: 250px 250px;
+    background-repeat: repeat;
+    z-index: 0;
+    animation: twinkling 8s linear infinite;
+}
+
+/* Add moving nebula effect */
+body::after {
+    content: '';
+    position: absolute;
+    top: 0;
     left: 0;
-    width: 100%;
-    height: 6px;
-    display: flex;
-    overflow: hidden;
-    border-bottom-left-radius: 12px;
-    border-bottom-right-radius: 12px;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle at 30% 20%, rgba(76, 0, 255, 0.15), transparent 40%),
+        radial-gradient(circle at 70% 65%, rgba(255, 0, 140, 0.1), transparent 35%),
+        radial-gradient(circle at 10% 75%, rgba(0, 255, 221, 0.1), transparent 30%);
+    background-size: 200% 200%;
+    z-index: 0;
+    animation: nebulaDrift 40s ease infinite;
 }
 
-.dock-line {
-    height: 100%;
-    flex-grow: 1;
+@keyframes twinkling {
+    0% { opacity: 0.5; }
+    50% { opacity: 1; }
+    100% { opacity: 0.5; }
 }
 
-/* Анимация волны для док-линий */
-@keyframes wave {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+@keyframes nebulaDrift {
+    0% { background-position: 0% 0%; }
+    25% { background-position: 25% 25%; }
+    50% { background-position: 50% 50%; }
+    75% { background-position: 75% 25%; }
+    100% { background-position: 0% 0%; }
 }
-
 #game-background {
     position: absolute;
     width: 100%;
@@ -353,56 +85,538 @@ body {
     pointer-events: none;
 }
 
-/* Важно: меняем z-index и прозрачность канваса */
+/* Game container with planetary ring effect */
+#game-container {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    background: rgba(0, 3, 20, 0.85);
+    border: 3px solid #00eeff;
+    box-shadow: 
+        0 0 30px #00eeff, 
+        0 0 60px #0026ff inset,
+        0 0 80px rgba(0, 255, 234, 0.3);
+    overflow: hidden;
+    border-radius: 20px;
+    z-index: 2;
+}
+
+/* Add holographic ring */
+#game-container::before {
+    content: '';
+    position: absolute;
+    top: -15px;
+    left: -15px;
+    right: -15px;
+    bottom: -15px;
+    border-radius: 30px;
+    background: transparent;
+    border: 2px solid rgba(0, 255, 255, 0.3);
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+    z-index: -1;
+    animation: pulseRing 4s ease-in-out infinite;
+}
+
+@keyframes pulseRing {
+    0% { transform: scale(1); opacity: 0.3; }
+    50% { transform: scale(1.03); opacity: 0.6; }
+    100% { transform: scale(1); opacity: 0.3; }
+}
+
+/* Canvas with improved visibility */
 #game-canvas {
     position: absolute;
     width: 100%;
     height: 100%;
     image-rendering: pixelated;
     display: none; /* Initially hidden */
-    z-index: 5; /* Выше фона */
-    opacity: 1 !important; /* Принудительно делаем канвас непрозрачным */
-    background-color: transparent;
-    pointer-events: auto;
+    z-index: 5;
+    opacity: 1 !important;
+    background-color: transparent !important;
 }
 
-/* Делаем контейнер игры прозрачным, чтобы фон был виден */
-#game-container {
-    position: relative;
-    width: 800px;
-    height: 600px;
-    background: rgba(0, 0, 0, 0.85);
-    border: 3px solid #0ff;
-    box-shadow: 0 0 30px #0ff, 0 0 60px #00f inset;
-    overflow: hidden;
-    border-radius: 20px;
-}
-
-/* Прочие элементы остаются без изменений */
+/* UI container with hologram effect */
 #ui-container {
     position: absolute;
     top: 10px;
     left: 10px;
     z-index: 10;
-    background: rgba(0, 0, 0, 0.6);
-    padding: 8px 12px;
-    border-radius: 10px;
-    border: 2px solid #0ff;
+    background: rgba(0, 14, 36, 0.7);
+    padding: 10px 15px;
+    border-radius: 12px;
+    border: 2px solid #00eeff;
     font-size: 18px;
-    text-shadow: 0 0 5px #0ff;
+    text-shadow: 0 0 6px #00eeff, 0 0 10px #00eeff;
     display: none; /* Initially hidden */
+    box-shadow: 0 0 10px rgba(0, 238, 255, 0.5) inset;
+    backdrop-filter: blur(3px);
+    animation: uiGlow 2s ease-in-out infinite alternate;
 }
 
-/* Добавляем стили, чтобы all canvas elements были непрозрачными */
-canvas {
-    opacity: 1 !important;
+@keyframes uiGlow {
+    0% { box-shadow: 0 0 10px rgba(0, 238, 255, 0.5) inset, 0 0 5px rgba(0, 238, 255, 0.3); }
+    100% { box-shadow: 0 0 15px rgba(0, 238, 255, 0.7) inset, 0 0 10px rgba(0, 238, 255, 0.5); }
 }
-   /* Inline стили для гарантированного приоритета над другими стилями */
-   #game-canvas {
-    opacity: 1 !important;
-    background-color: transparent !important;
+
+/* GAME OVER screen with space distortion effect */
+#game-over {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.6);
+    background: linear-gradient(135deg, #01010d, #040422, #090979);
+    border: 3px solid #00b3c6;
+    padding: 30px 50px;
+    color: #00b3c6;
+    font-size: 48px;
+    font-weight: bold;
+    text-shadow: 0 0 8px #00b3c6, 0 0 16px #00b3c6, 0 0 24px #090979;
+    box-shadow: 0 0 20px #00b3c6, inset 0 0 20px #090979;
+    border-radius: 16px;
+    z-index: 20;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    animation: gameOverAppear 0.8s ease-out forwards;
+    opacity: 0;
 }
-/* Элементы Matter.js должны быть непрозрачными */
+
+@keyframes gameOverAppear {
+    0% { transform: translate(-50%, -50%) scale(0) rotate(-10deg); opacity: 0; }
+    40% { transform: translate(-50%, -50%) scale(1.1) rotate(5deg); opacity: 0.7; }
+    70% { transform: translate(-50%, -50%) scale(0.9) rotate(-2deg); opacity: 0.85; }
+    100% { transform: translate(-50%, -50%) scale(1) rotate(0); opacity: 1; }
+}
+
+#final-score {
+    margin-top: 15px;
+    color: #00b3c6;
+    font-size: 24px;
+    text-shadow: 0 0 6px #00b3c6, 0 0 12px #00b3c6;
+    font-family: 'Orbitron', monospace;
+    letter-spacing: 2px;
+    position: relative;
+    padding: 10px 20px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    border: 2px solid #00b3c6;
+    box-shadow: 0 0 15px #00b3c6, 0 0 30px #090979 inset;
+}
+
+#restart-btn {
+    margin-top: 20px;
+    padding: 14px 28px;
+    font-size: 18px;
+    font-family: 'Orbitron', monospace;
+    background: linear-gradient(90deg, #0070ff, #004080);
+    border: none;
+    color: #000;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 0 20px #0070ff, 0 0 40px #004080 inset;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    position: relative;
+    overflow: hidden;
+    display: block;
+    margin: 20px auto 0 auto;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+#restart-btn:hover {
+    background: linear-gradient(90deg, #004080, #0070ff);
+    box-shadow: 0 0 30px #0070ff, 0 0 60px #004080 inset;
+    transform: translateY(-2px) scale(1.05);
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.6);
+}
+
+#restart-btn:active {
+    transform: scale(0.95) translateY(1px);
+}
+
+#restart-btn::before {
+    content: '';
+    position: absolute;
+    top: -100%;
+    left: -100%;
+    width: 300%;
+    height: 300%;
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 100%);
+    transform: rotate(45deg);
+    transition: 0.5s;
+    opacity: 0;
+}
+
+#restart-btn:hover::before {
+    animation: shineEffect 1.5s forwards;
+}
+
+@keyframes shineEffect {
+    0% { left: -100%; opacity: 0.5; }
+    100% { left: 100%; opacity: 0; }
+}
+
+
+/* Pause button with holographic look */
+#pause-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 10px 18px;
+    font-size: 16px;
+    font-family: 'Orbitron', monospace;
+    background: rgba(0, 30, 60, 0.5);
+    border: 2px solid #00eeff;
+    color: #00eeff;
+    border-radius: 8px;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s;
+    text-shadow: 0 0 5px #00eeff;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 0 10px rgba(0, 238, 255, 0.3);
+}
+
+#pause-btn:hover {
+    background: rgba(0, 238, 255, 0.2);
+    box-shadow: 0 0 15px rgba(0, 238, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+#pause-btn:active {
+    transform: translateY(1px);
+}
+
+/* Pause menu with space station theme */
+#pause-menu {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(4, 10, 30, 0.9);
+    border: 3px solid #00eeff;
+    padding: 35px 55px;
+    color: #00eeff;
+    font-size: 32px;
+    text-align: center;
+    display: none;
+    border-radius: 15px;
+    box-shadow: 0 0 20px #00eeff, inset 0 0 20px #0070ff;
+    backdrop-filter: blur(10px);
+    clip-path: polygon(
+        0% 10%, 10% 0%, 90% 0%, 100% 10%, 
+        100% 90%, 90% 100%, 10% 100%, 0% 90%
+    );
+}
+
+/* Buttons inside pause with advanced effects */
+#pause-menu button {
+    margin-top: 25px;
+    padding: 12px 24px;
+    font-size: 18px;
+    font-family: 'Orbitron', monospace;
+    background: linear-gradient(90deg, #00eeff, #0070ff);
+    border: none;
+    color: #000;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 0 10px #00eeff;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+#pause-menu button:hover {
+    background: linear-gradient(90deg, #0070ff, #00eeff);
+    transform: translateY(-3px);
+    box-shadow: 0 0 15px #00eeff, 0 0 5px #0070ff inset;
+}
+
+#pause-menu button:active {
+    transform: translateY(1px);
+}
+
+#pause-menu button::before {
+    content: '';
+    position: absolute;
+    top: -180%;
+    left: -50%;
+    width: 200%;
+    height: 500%;
+    background: linear-gradient(
+        transparent, 
+        rgba(255, 255, 255, 0.1), 
+        transparent
+    );
+    transform: rotate(35deg);
+    transition: 0.6s;
+    opacity: 0;
+}
+
+#pause-menu button:hover::before {
+    animation: buttonScan 1s linear forwards;
+}
+
+@keyframes buttonScan {
+    0% { left: -100%; opacity: 0.7; }
+    100% { left: 100%; opacity: 0; }
+}
+
+/* Mobile adaptations with improved responsiveness */
+@media (max-width: 800px) {
+    #game-container {
+        width: 95vw;
+        height: 80vh;
+        max-height: 600px;
+        border-radius: 15px;
+    }
+    
+    body::before, body::after {
+        background-size: 150px 150px;
+    }
+}
+
+/* Enhanced Start Screen with interstellar theme */
+#start-screen {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(4, 10, 30, 0.9);
+    border: 4px solid #00eeff;
+    padding: 45px 65px;
+    color: #00eeff;
+    text-align: center;
+    border-radius: 20px;
+    box-shadow: 0 0 30px #00eeff, inset 0 0 30px #0070ff;
+    z-index: 25;
+    width: 80%;
+    max-width: 600px;
+    backdrop-filter: blur(10px);
+    clip-path: polygon(
+        0% 5%, 5% 0%, 95% 0%, 100% 5%, 
+        100% 95%, 95% 100%, 5% 100%, 0% 95%
+    );
+}
+
+#start-screen h1 {
+    font-size: 4em;
+    margin-bottom: 20px;
+    color: #00b3c6;
+    text-shadow: 0 0 4px #00b3c6, 0 0 8px #004080;
+    letter-spacing: 4px;
+    position: relative;
+    font-weight: 900;
+    background: none;
+    -webkit-text-stroke: 1px #0070ff;
+    -webkit-text-fill-color: #00b3c6;
+}
+
+/* Advanced glow animation for title */
+@keyframes cosmicGlow {
+    0% { 
+        text-shadow: 0 0 10px #00eeff, 0 0 20px #00eeff; 
+        filter: brightness(1) drop-shadow(0 0 8px rgba(0, 238, 255, 0.7));
+    }
+    50% {
+        text-shadow: 0 0 15px #00eeff, 0 0 25px #00eeff, 0 0 35px #0070ff;
+        filter: brightness(1.2) drop-shadow(0 0 12px rgba(0, 238, 255, 0.8));
+    }
+    100% { 
+        text-shadow: 0 0 20px #00eeff, 0 0 30px #00eeff, 0 0 50px #0070ff; 
+        filter: brightness(1.4) drop-shadow(0 0 15px rgba(0, 238, 255, 0.9));
+    }
+}
+
+/* Game description with space theme */
+#game-description {
+    margin-bottom: 35px;
+    color: #90e0ff;
+    font-size: 1.3em;
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.5;
+    text-shadow: 0 0 3px #00eeff;
+    position: relative;
+    padding: 15px 20px;
+    background: rgba(0, 14, 36, 0.4);
+    border-radius: 10px;
+    border-left: 3px solid #00eeff;
+    border-right: 3px solid #00eeff;
+}
+
+/* Improved start button with particle effects */
+#start-btn {
+    padding: 16px 36px;
+    font-size: 1.6em;
+    background: linear-gradient(90deg, #00eeff, #007aff);
+    border: none;
+    color: #000;
+    font-weight: bold;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 0 20px #00eeff, 0 0 40px #007aff inset;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    font-family: 'Orbitron', monospace;
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+#start-btn:hover {
+    background: linear-gradient(90deg, #007aff, #00eeff);
+    box-shadow: 0 0 25px #00eeff, 0 0 50px #007aff inset;
+    transform: scale(1.05) translateY(-5px);
+    color: #000;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+}
+
+#start-btn:active {
+    transform: scale(0.98) translateY(-2px);
+}
+
+/* Enhanced shine effect on button */
+#start-btn::before {
+    content: '';
+    position: absolute;
+    top: -200%;
+    left: -200%;
+    width: 500%;
+    height: 500%;
+    background: linear-gradient(
+        45deg, 
+        rgba(255, 255, 255, 0) 0%, 
+        rgba(255, 255, 255, 0.1) 25%, 
+        rgba(255, 255, 255, 0.3) 50%, 
+        rgba(255, 255, 255, 0.1) 75%, 
+        rgba(255, 255, 255, 0) 100%
+    );
+    transform: rotate(45deg);
+    z-index: 1;
+}
+
+#start-btn:hover::before {
+    animation: cosmicShine 1.5s forwards;
+}
+
+@keyframes cosmicShine {
+    0% { left: -200%; }
+    100% { left: 200%; }
+}
+
+/* Start screen background with nebula effect */
+#start-screen-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+    border-radius: 16px;
+    opacity: 0.4;
+    background: 
+        radial-gradient(circle at 30% 20%, rgba(0, 162, 255, 0.3), transparent 50%),
+        radial-gradient(circle at 70% 65%, rgba(106, 0, 255, 0.3), transparent 45%),
+        radial-gradient(circle at 20% 70%, rgba(0, 255, 234, 0.3), transparent 40%);
+    animation: nebulaEffect 20s ease infinite alternate;
+}
+
+@keyframes nebulaEffect {
+    0% { background-position: 0% 0%; }
+    50% { background-position: 10% 20%; }
+    100% { background-position: -10% -10%; }
+}
+
+/* Enhanced floating blocks for start screen */
+.floating-block {
+    position: absolute;
+    opacity: 0.3;
+    transition: all 0.5s;
+    filter: drop-shadow(0 0 8px rgba(0, 238, 255, 0.7));
+    border: 1px solid rgba(0, 238, 255, 0.4);
+    background: rgba(0, 30, 60, 0.2);
+    backdrop-filter: blur(2px);
+}
+
+.floating-block:hover {
+    opacity: 0.7;
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(0, 238, 255, 0.5);
+}
+
+/* Dock lines with beam scanner effect */
+.dock-lines {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 8px;
+    display: flex;
+    overflow: hidden;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+}
+
+.dock-line {
+    height: 100%;
+    flex-grow: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.dock-line::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 50%;
+    height: 100%;
+    background: rgba(0, 238, 255, 0.7);
+    filter: blur(5px);
+    animation: scanLine 3s infinite;
+    animation-delay: calc(var(--i) * 0.5s);
+}
+
+@keyframes scanLine {
+    0% { left: -100%; opacity: 0.7; }
+    100% { left: 200%; opacity: 0; }
+}
+
+/* Enhanced game background with cosmic theme */
+#game-background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-size: cover; 
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 1;
+    opacity: 0.3;
+    pointer-events: none;
+    filter: hue-rotate(40deg) saturate(1.5);
+    animation: subtlePulsate 15s ease-in-out infinite alternate;
+}
+
+@keyframes subtlePulsate {
+    0% { opacity: 0.25; filter: hue-rotate(40deg) saturate(1.5); }
+    50% { opacity: 0.35; filter: hue-rotate(60deg) saturate(1.7); }
+    100% { opacity: 0.25; filter: hue-rotate(40deg) saturate(1.5); }
+}
+
+/* Matter.js elements with improved visibility */
 .matter-body {
     opacity: 1 !important;
+    filter: drop-shadow(0 0 5px rgba(0, 238, 255, 0.7));
+}
+
+/* Ensure all canvas elements visibility */
+canvas {
+    opacity: 1 !important;
+    z-index: 5;
 }
