@@ -88,20 +88,20 @@ body::after {
 /* Game container with planetary ring effect */
 #game-container {
     position: relative;
-    width: 800px;
-    height: 600px;
+    width: 90vw;
+    max-width: 800px;
+    height: 70vh;
+    max-height: 600px;
     background: rgba(0, 3, 20, 0.85);
-    border: 3px solid #00eeff;
-    box-shadow: 
-        0 0 30px #00eeff, 
-        0 0 60px #0026ff inset,
-        0 0 80px rgba(0, 255, 234, 0.3);
-    overflow: hidden;
+    border: 2px solid #00eeff;
     border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 0 15px #00eeff, 0 0 30px #0026ff inset;
     z-index: 2;
+    will-change: transform, opacity;
 }
 
-/* Add holographic ring */
+/* Анимация пульса кольца */
 #game-container::before {
     content: '';
     position: absolute;
@@ -112,11 +112,11 @@ body::after {
     border-radius: 30px;
     background: transparent;
     border: 2px solid rgba(0, 255, 255, 0.3);
-    box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
     z-index: -1;
-    animation: pulseRing 4s ease-in-out infinite;
+    animation: pulseRing 3s ease-in-out infinite;
+    will-change: transform, opacity;
 }
-
 @keyframes pulseRing {
     0% { transform: scale(1); opacity: 0.3; }
     50% { transform: scale(1.03); opacity: 0.6; }
@@ -367,15 +367,16 @@ body::after {
 
 /* Mobile adaptations with improved responsiveness */
 @media (max-width: 800px) {
-    #game-container {
-        width: 95vw;
-        height: 80vh;
-        max-height: 600px;
-        border-radius: 15px;
+    body::before, body::after {
+        background-size: 200px 200px;
     }
     
-    body::before, body::after {
-        background-size: 150px 150px;
+    #start-screen h1 {
+        font-size: 2em;
+    }
+    
+    #game-container::before {
+        animation-duration: 5s;
     }
 }
 
@@ -385,35 +386,29 @@ body::after {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    width: 90vw;
+    max-width: 600px;
     background: rgba(4, 10, 30, 0.9);
-    border: 4px solid #00eeff;
-    padding: 45px 65px;
+    border: 3px solid #00eeff;
+    padding: 30px 40px;
     color: #00eeff;
     text-align: center;
     border-radius: 20px;
-    box-shadow: 0 0 30px #00eeff, inset 0 0 30px #0070ff;
-    z-index: 25;
-    width: 80%;
-    max-width: 600px;
+    box-shadow: 0 0 20px #00eeff, inset 0 0 20px #0070ff;
     backdrop-filter: blur(10px);
-    clip-path: polygon(
-        0% 5%, 5% 0%, 95% 0%, 100% 5%, 
-        100% 95%, 95% 100%, 5% 100%, 0% 95%
-    );
+    z-index: 25;
 }
 
 #start-screen h1 {
-    font-size: 4em;
+    font-size: 2.5em;
     margin-bottom: 20px;
     color: #00b3c6;
     text-shadow: 0 0 4px #00b3c6, 0 0 8px #004080;
-    letter-spacing: 4px;
-    position: relative;
-    font-weight: 900;
-    background: none;
+    letter-spacing: 3px;
     -webkit-text-stroke: 1px #0070ff;
     -webkit-text-fill-color: #00b3c6;
 }
+
 
 /* Advanced glow animation for title */
 @keyframes cosmicGlow {
