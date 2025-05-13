@@ -1,5 +1,4 @@
 
-
 // Функция для создания фона стартового экрана
 function createStartScreenBackground() {
     const startScreen = document.getElementById('start-screen');
@@ -18,42 +17,83 @@ function createStartScreenBackground() {
     // Добавляем контейнер фона в начальный экран
     startScreen.prepend(backgroundContainer);
     
-    // Создаем плавающие блоки
+    // Для мобильных устройств создаем статичный фон
+    if (isMobileDevice()) {
+        createMobileBackground(backgroundContainer);
+    } else {
+        createDesktopBackground(backgroundContainer);
+    }
+}
+
+// Упрощенный фон для мобильных устройств
+function createMobileBackground(container) {
+    // Создаем минимальное количество статичных блоков
     const colors = [
-        {fill: '#3498db', stroke: '#2980b9'}, // Синий
-        {fill: '#e74c3c', stroke: '#c0392b'}, // Красный
-        {fill: '#f1c40f', stroke: '#f39c12'}, // Жёлтый
-        {fill: '#2ecc71', stroke: '#27ae60'}, // Зелёный
-        {fill: '#9b59b6', stroke: '#8e44ad'}, // Фиолетовый
-        {fill: '#e67e22', stroke: '#d35400'}, // Оранжевый
-        {fill: '#1abc9c', stroke: '#16a085'}  // Бирюзовый
+        {fill: '#3498db', stroke: '#2980b9'},
+        {fill: '#e74c3c', stroke: '#c0392b'},
+        {fill: '#2ecc71', stroke: '#27ae60'}
     ];
     
-    // Создаем разные размеры блоков
+    const numBlocks = 5; // Уменьшаем количество блоков
+    for (let i = 0; i < numBlocks; i++) {
+        const block = document.createElement('div');
+        const colorIndex = i % colors.length;
+        const size = 40 + Math.random() * 30;
+        
+        block.className = 'floating-block';
+        block.style.position = 'absolute';
+        block.style.width = size + 'px';
+        block.style.height = size / 3 + 'px';
+        block.style.backgroundColor = colors[colorIndex].fill;
+        block.style.border = `1px solid ${colors[colorIndex].stroke}`;
+        block.style.borderRadius = '4px';
+        block.style.opacity = '0.1';
+        
+        // Статичное положение
+        const startX = 20 + (i * 15);
+        const startY = 20 + (i * 20);
+        block.style.left = startX + '%';
+        block.style.top = startY + '%';
+        
+        container.appendChild(block);
+    }
+}
+
+// Полный фон для десктопа
+function createDesktopBackground(container) {
+    // Создаем плавающие блоки
+    const colors = [
+        {fill: '#3498db', stroke: '#2980b9'},
+        {fill: '#e74c3c', stroke: '#c0392b'},
+        {fill: '#f1c40f', stroke: '#f39c12'},
+        {fill: '#2ecc71', stroke: '#27ae60'},
+        {fill: '#9b59b6', stroke: '#8e44ad'},
+        {fill: '#e67e22', stroke: '#d35400'},
+        {fill: '#1abc9c', stroke: '#16a085'}
+    ];
+    
     const numBlocks = 15;
     for (let i = 0; i < numBlocks; i++) {
         const block = document.createElement('div');
         const colorIndex = Math.floor(Math.random() * colors.length);
-        const size = 20 + Math.random() * 60; // Размер от 20px до 80px
+        const size = 20 + Math.random() * 60;
         
-        // Настраиваем стили для блока
         block.className = 'floating-block';
         block.style.position = 'absolute';
         block.style.width = size + 'px';
-        block.style.height = size / 3 + 'px'; // Высота в 3 раза меньше ширины
+        block.style.height = size / 3 + 'px';
         block.style.backgroundColor = colors[colorIndex].fill;
         block.style.border = `2px solid ${colors[colorIndex].stroke}`;
         block.style.boxShadow = `0 0 10px ${colors[colorIndex].fill}, inset 0 0 5px ${colors[colorIndex].stroke}`;
         block.style.borderRadius = '4px';
         block.style.opacity = '0.2';
         
-        // Случайное начальное положение
-        const startX = Math.random() * 100; // Процент от ширины контейнера
-        const startY = Math.random() * 100; // Процент от высоты контейнера
+        const startX = Math.random() * 100;
+        const startY = Math.random() * 100;
         block.style.left = startX + '%';
         block.style.top = startY + '%';
         
-        // Добавляем блик для эффекта металла
+        // Добавляем блик
         const highlight = document.createElement('div');
         highlight.style.position = 'absolute';
         highlight.style.top = '20%';
@@ -64,107 +104,92 @@ function createStartScreenBackground() {
         highlight.style.borderRadius = '2px';
         block.appendChild(highlight);
         
-        // Добавляем блок в контейнер
-        backgroundContainer.appendChild(block);
+        container.appendChild(block);
         
-        // Анимируем блок
+        // Анимируем только на десктопе
         animateBlock(block);
     }
     
-    // Добавляем эффект звезд в фоне
-    createStarryBackground(backgroundContainer);
+    // Добавляем звезды только для десктопа
+    createStarryBackground(container);
 }
 
-// Анимация для отдельного блока
+// Оптимизированная анимация для десктопа
 function animateBlock(block) {
-    // Начальные значения для анимации
-    const duration = 15 + Math.random() * 20; // от 15 до 35 секунд
-    const delay = Math.random() * 5; // задержка от 0 до 5 секунд
+    // Используем CSS transitions вместо keyframes для лучшей производительности
+    const duration = 15 + Math.random() * 20;
+    const delay = Math.random() * 5;
     
-    // Создаем @keyframes анимацию с уникальным именем
-    const animationName = 'float-' + Math.floor(Math.random() * 10000);
-    const keyframes = `
-        @keyframes ${animationName} {
-            0% {
-                transform: translate(0, 0) rotate(0deg);
-            }
-            25% {
-                transform: translate(${Math.random() * 30 - 15}%, ${Math.random() * 30 - 15}%) rotate(${Math.random() * 20 - 10}deg);
-            }
-            50% {
-                transform: translate(${Math.random() * 30 - 15}%, ${Math.random() * 30 - 15}%) rotate(${Math.random() * 20 - 10}deg);
-            }
-            75% {
-                transform: translate(${Math.random() * 30 - 15}%, ${Math.random() * 30 - 15}%) rotate(${Math.random() * 20 - 10}deg);
-            }
-            100% {
-                transform: translate(0, 0) rotate(0deg);
-            }
-        }
-    `;
+    // Используем простые трансформации
+    block.style.transition = `transform ${duration}s ease-in-out`;
     
-    // Добавляем стили в head
-    const styleElement = document.createElement('style');
-    styleElement.innerHTML = keyframes;
-    document.head.appendChild(styleElement);
+    // Простая анимация движения
+    function moveBlock() {
+        const x = (Math.random() - 0.5) * 50;
+        const y = (Math.random() - 0.5) * 50;
+        const rotate = (Math.random() - 0.5) * 20;
+        
+        block.style.transform = `translate(${x}px, ${y}px) rotate(${rotate}deg)`;
+        
+        setTimeout(moveBlock, duration * 1000);
+    }
     
-    // Применяем анимацию к блоку
-    block.style.animation = `${animationName} ${duration}s ease-in-out ${delay}s infinite`;
+    setTimeout(moveBlock, delay * 1000);
 }
 
-// Создание звездного фона
+// Звёздный фон только для десктопа
 function createStarryBackground(container) {
-    const numStars = 100;
+    const numStars = 50; // Уменьшаем количество звезд
     
     for (let i = 0; i < numStars; i++) {
         const star = document.createElement('div');
-        const size = 1 + Math.random() * 2; // Размер от 1px до 3px
+        const size = 1 + Math.random() * 2;
         
-        // Настраиваем стили для звезды
         star.className = 'star';
         star.style.position = 'absolute';
         star.style.width = size + 'px';
         star.style.height = size + 'px';
         star.style.backgroundColor = '#fff';
         star.style.borderRadius = '50%';
-        star.style.boxShadow = '0 0 ' + (size * 2) + 'px #0ff';
+        star.style.boxShadow = '0 0 ' + (size * 2) + 'px rgba(0, 255, 255, 0.5)';
         
-        // Случайное положение
         star.style.left = Math.random() * 100 + '%';
         star.style.top = Math.random() * 100 + '%';
         
-        // Анимация мерцания
+        // Простая анимация мерцания
         const animationDuration = 1 + Math.random() * 4;
         star.style.animation = `twinkle ${animationDuration}s ease-in-out infinite`;
         
-        // Добавляем звезду в контейнер
         container.appendChild(star);
     }
     
-    // Добавляем @keyframes для мерцания
-    const twinkleKeyframes = `
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 1; }
-        }
-    `;
-    
-    const styleElement = document.createElement('style');
-    styleElement.innerHTML = twinkleKeyframes;
-    document.head.appendChild(styleElement);
+    // Добавляем @keyframes для мерцания только один раз
+    if (!document.getElementById('twinkle-animation')) {
+        const twinkleKeyframes = `
+            @keyframes twinkle {
+                0%, 100% { opacity: 0.3; }
+                50% { opacity: 1; }
+            }
+        `;
+        
+        const styleElement = document.createElement('style');
+        styleElement.id = 'twinkle-animation';
+        styleElement.innerHTML = twinkleKeyframes;
+        document.head.appendChild(styleElement);
+    }
 }
 
-// Вызываем функцию создания фона при загрузке страницы
+// Оптимизированная инициализация
 window.addEventListener('DOMContentLoaded', function() {
     createStartScreenBackground();
 });
+
+// Оптимизированная функция отрисовки деталей блоков
 function renderBlockDetails(ctx) {
     droppedBlocks.forEach(block => {
         if (block.render && block.details) {
-            // Save context to preserve transformations
             ctx.save();
             
-            // Translate and rotate to match the block's position and angle
             ctx.translate(block.position.x, block.position.y);
             ctx.rotate(block.angle);
             
@@ -191,19 +216,16 @@ function renderBlockDetails(ctx) {
             ctx.fillStyle = block.details;
             ctx.fillRect(width/2 - portSize - 1, -portSize/2 + 1, portSize - 2, portSize - 2);
             
-            // Индикатор энергии в центре
+            // Центральный индикатор СТАТИЧНЫЙ - без анимации
             const indicatorWidth = 20;
             const indicatorHeight = 6;
             
             ctx.fillStyle = block.render.strokeStyle;
             ctx.fillRect(-indicatorWidth/2, -indicatorHeight/2, indicatorWidth, indicatorHeight);
             
-            // Пульсирующий эффект индикатора - используем синус для анимации
-            const pulse = Math.sin((Date.now() + block.id*100) / 200) * 0.5 + 0.5; // значение от 0 до 1
-            const pulseWidth = indicatorWidth * (0.2 + 0.6 * pulse);
-            
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(-indicatorWidth/2, -indicatorHeight/2, pulseWidth, indicatorHeight);
+            // Заливаем индикатор полностью, без пульсации
+            ctx.fillStyle = block.details;
+            ctx.fillRect(-indicatorWidth/2 + 1, -indicatorHeight/2 + 1, indicatorWidth - 2, indicatorHeight - 2);
             
             ctx.restore();
         }
