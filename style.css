@@ -1,4 +1,3 @@
-
 body {
     margin: 0;
     padding: 0;
@@ -16,6 +15,46 @@ body {
     position: relative;
 }
 
+/* Оптимизируем анимации для мобильных устройств */
+@media (max-width: 768px) {
+    /* Упрощаем анимации для экономии ресурсов */
+    body {
+        animation: none;
+        background: #1a1a5a;
+    }
+    
+    /* Отключаем сложные эффекты на мобильных */
+    body::before,
+    body::after {
+        display: none;
+    }
+    
+    /* Упрощаем анимации блоков */
+    .floating-block {
+        animation: none !important;
+        opacity: 0.1 !important;
+    }
+    
+    /* Оптимизируем производительность канваса */
+    #game-canvas {
+        image-rendering: auto;
+        will-change: auto;
+    }
+    
+    /* Упрощаем эффекты свечения */
+    #game-container::before {
+        animation: none;
+        box-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+    }
+    
+    /* Оптимизируем фоновое изображение */
+    #game-background {
+        animation: none;
+        opacity: 0.1;
+        filter: none;
+    }
+}
+
 /* Enhanced cosmic background animation */
 @keyframes cosmicBackgroundMove {
     0% { background-position: 0% 50%; }
@@ -24,41 +63,44 @@ body {
     100% { background-position: 0% 50%; }
 }
 
-/* Add star field */
-body::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: 
-        radial-gradient(1px 1px at 25% 35%, white, transparent),
-        radial-gradient(1px 1px at 50% 50%, rgba(255,255,255,0.8), transparent),
-        radial-gradient(2px 2px at 75% 15%, rgba(255,255,255,0.7), transparent),
-        radial-gradient(2px 2px at 15% 65%, rgba(255,255,255,0.9), transparent),
-        radial-gradient(1px 1px at 85% 75%, rgba(255,255,255,0.6), transparent);
-    background-size: 250px 250px;
-    background-repeat: repeat;
-    z-index: 0;
-    animation: twinkling 8s linear infinite;
-}
+/* Условная загрузка звёздного фона только для десктопа */
+@media (min-width: 769px) {
+    /* Add star field */
+    body::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: 
+            radial-gradient(1px 1px at 25% 35%, white, transparent),
+            radial-gradient(1px 1px at 50% 50%, rgba(255,255,255,0.8), transparent),
+            radial-gradient(2px 2px at 75% 15%, rgba(255,255,255,0.7), transparent),
+            radial-gradient(2px 2px at 15% 65%, rgba(255,255,255,0.9), transparent),
+            radial-gradient(1px 1px at 85% 75%, rgba(255,255,255,0.6), transparent);
+        background-size: 250px 250px;
+        background-repeat: repeat;
+        z-index: 0;
+        animation: twinkling 8s linear infinite;
+    }
 
-/* Add moving nebula effect */
-body::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-image: 
-        radial-gradient(circle at 30% 20%, rgba(76, 0, 255, 0.15), transparent 40%),
-        radial-gradient(circle at 70% 65%, rgba(255, 0, 140, 0.1), transparent 35%),
-        radial-gradient(circle at 10% 75%, rgba(0, 255, 221, 0.1), transparent 30%);
-    background-size: 200% 200%;
-    z-index: 0;
-    animation: nebulaDrift 40s ease infinite;
+    /* Add moving nebula effect */
+    body::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: 
+            radial-gradient(circle at 30% 20%, rgba(76, 0, 255, 0.15), transparent 40%),
+            radial-gradient(circle at 70% 65%, rgba(255, 0, 140, 0.1), transparent 35%),
+            radial-gradient(circle at 10% 75%, rgba(0, 255, 221, 0.1), transparent 30%);
+        background-size: 200% 200%;
+        z-index: 0;
+        animation: nebulaDrift 40s ease infinite;
+    }
 }
 
 @keyframes twinkling {
@@ -86,9 +128,14 @@ body::after {
     z-index: 1;
     opacity: 0.2;
     pointer-events: none;
+    /* Добавляем аппаратное ускорение */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 }
 
-/* Game container with planetary ring effect */
+/* Game container with optimized effects */
 #game-container {
     position: relative;
     width: min(90vw, 800px);
@@ -99,10 +146,16 @@ body::after {
     overflow: hidden;
     box-shadow: 0 0 15px #00eeff, 0 0 30px #0026ff inset;
     z-index: 2;
-    will-change: transform, opacity;
+    /* Отключаем will-change для мобильных */
 }
 
-/* Анимация пульса кольца */
+@media (min-width: 769px) {
+    #game-container {
+        will-change: transform, opacity;
+    }
+}
+
+/* Оптимизированная анимация кольца */
 #game-container::before {
     content: '';
     position: absolute;
@@ -116,7 +169,12 @@ body::after {
     box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
     z-index: -1;
     animation: pulseRing 3s ease-in-out infinite;
-    will-change: transform, opacity;
+}
+
+@media (max-width: 768px) {
+    #game-container::before {
+        will-change: auto;
+    }
 }
 
 @keyframes pulseRing {
@@ -137,7 +195,7 @@ body::after {
     background-color: transparent !important;
 }
 
-/* UI container with hologram effect */
+/* UI container with optimized effects */
 #ui-container {
     position: absolute;
     top: 10px;
@@ -155,12 +213,21 @@ body::after {
     animation: uiGlow 2s ease-in-out infinite alternate;
 }
 
+@media (max-width: 768px) {
+    #ui-container {
+        animation: none;
+        box-shadow: 0 0 5px rgba(0, 238, 255, 0.3) inset;
+        text-shadow: 0 0 3px #00eeff;
+        backdrop-filter: none;
+    }
+}
+
 @keyframes uiGlow {
     0% { box-shadow: 0 0 10px rgba(0, 238, 255, 0.5) inset, 0 0 5px rgba(0, 238, 255, 0.3); }
     100% { box-shadow: 0 0 15px rgba(0, 238, 255, 0.7) inset, 0 0 10px rgba(0, 238, 255, 0.5); }
 }
 
-/* GAME OVER screen with space distortion effect */
+/* GAME OVER screen with optimized effects */
 #game-over {
     position: absolute;
     top: 50%;
@@ -185,11 +252,23 @@ body::after {
     width: min(90vw, 400px);
 }
 
+@media (max-width: 768px) {
+    #game-over {
+        animation: gameOverAppearMobile 0.5s ease-out forwards;
+        text-shadow: 0 0 4px #00b3c6;
+    }
+}
+
 @keyframes gameOverAppear {
     0% { transform: translate(-50%, -50%) scale(0) rotate(-10deg); opacity: 0; }
     40% { transform: translate(-50%, -50%) scale(1.1) rotate(5deg); opacity: 0.7; }
     70% { transform: translate(-50%, -50%) scale(0.9) rotate(-2deg); opacity: 0.85; }
     100% { transform: translate(-50%, -50%) scale(1) rotate(0); opacity: 1; }
+}
+
+@keyframes gameOverAppearMobile {
+    0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
 
 #final-score {
@@ -239,21 +318,30 @@ body::after {
     transform: scale(0.95) translateY(1px);
 }
 
-#restart-btn::before {
-    content: '';
-    position: absolute;
-    top: -100%;
-    left: -100%;
-    width: 300%;
-    height: 300%;
-    background: linear-gradient(45deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 100%);
-    transform: rotate(45deg);
-    transition: 0.5s;
-    opacity: 0;
+/* Оптимизируем эффекты для мобильных */
+@media (max-width: 768px) {
+    #restart-btn::before {
+        display: none;
+    }
 }
 
-#restart-btn:hover::before {
-    animation: shineEffect 1.5s forwards;
+@media (min-width: 769px) {
+    #restart-btn::before {
+        content: '';
+        position: absolute;
+        top: -100%;
+        left: -100%;
+        width: 300%;
+        height: 300%;
+        background: linear-gradient(45deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 100%);
+        transform: rotate(45deg);
+        transition: 0.5s;
+        opacity: 0;
+    }
+
+    #restart-btn:hover::before {
+        animation: shineEffect 1.5s forwards;
+    }
 }
 
 @keyframes shineEffect {
@@ -261,7 +349,7 @@ body::after {
     100% { left: 100%; opacity: 0; }
 }
 
-/* Enhanced Start Screen with interstellar theme */
+/* Оптимизированный Start Screen */
 #start-screen {
     position: absolute;
     top: 50%;
@@ -281,6 +369,13 @@ body::after {
     overflow-y: auto;
 }
 
+@media (max-width: 768px) {
+    #start-screen {
+        backdrop-filter: none;
+        background: rgba(4, 10, 30, 0.95);
+    }
+}
+
 #start-screen h1 {
     font-size: clamp(2em, 5vw, 3.5em);
     margin-bottom: clamp(15px, 2vw, 20px);
@@ -291,7 +386,14 @@ body::after {
     -webkit-text-fill-color: #00b3c6;
 }
 
-/* Game description with space theme */
+@media (max-width: 768px) {
+    #start-screen h1 {
+        text-shadow: 0 0 2px #00b3c6;
+        -webkit-text-stroke: 0.5px #0070ff;
+    }
+}
+
+/* Game description with optimized effects */
 #game-description {
     margin-bottom: clamp(20px, 3vw, 35px);
     color: #90e0ff;
@@ -309,7 +411,7 @@ body::after {
     border-right: 3px solid #00eeff;
 }
 
-/* Improved start button with particle effects */
+/* Improved start button with optimized effects */
 #start-btn {
     padding: clamp(12px, 2vw, 16px) clamp(24px, 3vw, 36px);
     font-size: clamp(1.2em, 3vw, 1.6em);
@@ -344,10 +446,6 @@ body::after {
 @media (max-width: 768px) {
     body {
         background-size: 400% 400%;
-    }
-    
-    body::before, body::after {
-        background-size: 150px 150px;
     }
     
     #game-container {
@@ -480,7 +578,7 @@ body::after {
     }
 }
 
-/* Dock lines with beam scanner effect */
+/* Dock lines with optimized effects */
 .dock-lines {
     position: absolute;
     bottom: 0;
@@ -500,17 +598,19 @@ body::after {
     overflow: hidden;
 }
 
-.dock-line::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 50%;
-    height: 100%;
-    background: rgba(0, 238, 255, 0.7);
-    filter: blur(5px);
-    animation: scanLine 3s infinite;
-    animation-delay: calc(var(--i) * 0.5s);
+@media (min-width: 769px) {
+    .dock-line::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 50%;
+        height: 100%;
+        background: rgba(0, 238, 255, 0.7);
+        filter: blur(5px);
+        animation: scanLine 3s infinite;
+        animation-delay: calc(var(--i) * 0.5s);
+    }
 }
 
 @keyframes scanLine {
@@ -518,7 +618,7 @@ body::after {
     100% { left: 200%; opacity: 0; }
 }
 
-/* Enhanced game background with cosmic theme */
+/* Оптимизированный game background */
 #game-background {
     position: absolute;
     width: 100%;
@@ -531,6 +631,14 @@ body::after {
     pointer-events: none;
     filter: hue-rotate(40deg) saturate(1.5);
     animation: subtlePulsate 15s ease-in-out infinite alternate;
+}
+
+@media (max-width: 768px) {
+    #game-background {
+        animation: none;
+        filter: none;
+        opacity: 0.15;
+    }
 }
 
 @keyframes subtlePulsate {
@@ -551,7 +659,7 @@ canvas {
     z-index: 5;
 }
 
-/* Floating blocks for start screen */
+/* Оптимизированные floating blocks */
 .floating-block {
     position: absolute;
     opacity: 0.3;
@@ -562,28 +670,38 @@ canvas {
     backdrop-filter: blur(2px);
 }
 
+@media (max-width: 768px) {
+    .floating-block {
+        filter: none;
+        backdrop-filter: none;
+        transition: none;
+    }
+}
+
 .floating-block:hover {
     opacity: 0.7;
     transform: scale(1.1);
     box-shadow: 0 0 15px rgba(0, 238, 255, 0.5);
 }
 
-/* Light beam effect */
-.light-beam {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 2px;
-    height: 100%;
-    background: linear-gradient(to bottom, 
-        transparent 0%, 
-        rgba(0, 238, 255, 0.6) 30%, 
-        rgba(0, 238, 255, 0.8) 50%, 
-        rgba(0, 238, 255, 0.6) 70%, 
-        transparent 100%);
-    animation: beamMove 4s linear infinite;
-    opacity: 0.6;
+ /*Light beam effect - только для десктопа */
+ @media (min-width: 769px) {
+    .light-beam {
+        position: absolute;
+        top: 0;
+        left: 13%;
+        transform: translateX(-50%);
+        width: 2px;
+        height: 50%;
+        background: linear-gradient(to bottom, 
+            transparent 0%, 
+            rgba(0, 238, 255, 0.6) 30%, 
+            rgba(0, 238, 255, 0.8) 50%, 
+            rgba(0, 238, 255, 0.6) 70%, 
+            transparent 100%);
+        animation: beamMove 10s linear infinite;
+        opacity: 0.6;
+    }
 }
 
 @keyframes beamMove {
@@ -592,10 +710,347 @@ canvas {
     100% { transform: translateX(-50%) scaleY(0); }
 }
 
-/* Prevent text selection on game elements */
-#game-container, #ui-container, #game-over, #start-screen {
-    user-select: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
+/* Стили для мобильных устройств с классом */
+.mobile-device #game-background {
+    animation: none !important;
+    filter: none !important;
+    opacity: 0.1 !important;
+    background-size: cover !important;
+    background-attachment: fixed !important;
+    transform: none !important;
+    -webkit-transform: none !important;
 }
+
+.mobile-device #start-screen {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
+.mobile-device .floating-block {
+    animation: none !important;
+    transition: none !important;
+}
+
+.mobile-device * {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* Дополнительная оптимизация для iOS */
+@supports (-webkit-touch-callout: none) {
+    #game-background {
+        position: fixed;
+        background-attachment: scroll;
+    }
+    
+    #start-screen {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        -webkit-transform: translate(-50%, -50%);
+    }
+}
+
+/* Оптимизация для Android */
+@media screen and (-webkit-min-device-pixel-ratio: 0) and (max-width: 768px) {
+    #game-background {
+        background-attachment: scroll !important;
+        background-size: cover !important;
+        background-position: center center !important;
+    }
+}
+
+/* Оптимизация для мобильных GPU */
+@media (max-width: 768px) {
+    body, #game-container, #start-screen, #game-background {
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+    }
+    
+    /* Убираем will-change для экономии памяти */
+    * {
+        will-change: auto !important;
+    }
+}
+
+/* Стили для звёзд - отключены на мобильных */
+@media (max-width: 768px) {
+    .star {
+        display: none;
+    }
+}
+
+/* Исправляем проблему с мерцанием picture1.png */
+@media (max-width: 768px) {
+    #game-background {
+        background-attachment: scroll;
+        transform: translate3d(0, 0, 0);
+        -webkit-transform: translate3d(0, 0, 0);
+        will-change: auto;
+        image-rendering: pixelated;
+        -webkit-image-rendering: pixelated;
+        image-rendering: -moz-crisp-edges;
+        image-rendering: crisp-edges;
+    }
+    
+    /* Предотвращаем мерцание на iOS */
+    #start-screen {
+        -webkit-overflow-scrolling: touch;
+        transform: translate3d(-50%, -50%, 0);
+        -webkit-transform: translate3d(-50%, -50%, 0);
+        will-change: auto;
+    }
+    
+    /* Оптимизация изображения */
+    #game-background {
+        background-size: cover;
+        background-origin: border-box;
+        background-clip: border-box;
+    }
+}
+
+/* Отключаем сложные тени для мобильных */
+@media (max-width: 768px) {
+    * {
+        text-shadow: none !important;
+        box-shadow: none !important;
+    }
+    
+    /* Оставляем только базовые тени для важных элементов */
+    #game-container {
+        box-shadow: 0 0 5px #00eeff !important;
+    }
+    
+/* НОВЫЕ СТИЛИ ДЛЯ ИСПРАВЛЕНИЯ ПРОБЛЕМЫ С МОБИЛЬНЫМ ОТОБРАЖЕНИЕМ */
+/* Специальные стили для мобильного стартового экрана */
+@media (max-width: 768px) {
+    #start-screen {
+        width: calc(100vw - 40px);
+        max-width: 400px;
+        margin: 20px;
+        padding: 25px 20px;
+        transform: translate(-50%, -50%);
+        -webkit-transform: translate(-50%, -50%);
+        box-sizing: border-box;
+    }
+    
+    #start-screen h1 {
+        font-size: 2em;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    
+    #game-description {
+        font-size: 0.95em;
+        padding: 12px 16px;
+        margin: 0 auto 25px auto;
+        max-width: 100%;
+        box-sizing: border-box;
+        background: rgba(0, 20, 40, 0.6);
+        border: 1px solid #00eeff;
+        border-radius: 8px;
+        line-height: 1.4;
+    }
+    
+    #start-btn {
+        font-size: 1.2em;
+        padding: 14px 30px;
+        width: auto;
+        min-width: 150px;
+        max-width: 250px;
+        margin: 0 auto;
+        display: block;
+        box-sizing: border-box;
+    }
+}
+
+/* Фикс для очень маленьких экранов */
+@media (max-width: 360px) {
+    #start-screen {
+        width: calc(100vw - 20px);
+        padding: 20px 15px;
+    }
+    
+    #start-screen h1 {
+        font-size: 1.8em;
+    }
+    
+    #game-description {
+        font-size: 0.9em;
+        padding: 10px 12px;
+    }
+    
+    #start-btn {
+        font-size: 1.1em;
+        padding: 12px 24px;
+    }
+}
+
+/* Убираем лишние декоративные элементы на мобильных */
+@media (max-width: 768px) {
+    #game-description::before,
+    #game-description::after {
+        display: none;
+    }
+    
+    /* Упрощаем бордеры для лучшей читаемости */
+    #game-description {
+        border-left: 2px solid #00eeff;
+        border-right: 2px solid #00eeff;
+        border-top: 1px solid rgba(0, 238, 255, 0.3);
+        border-bottom: 1px solid rgba(0, 238, 255, 0.3);
+    }
+}
+
+/* Дополнительные стили для мобильных устройств */
+@media (max-width: 768px) {
+    /* Игровой контейнер оптимизация */
+    #game-container {
+        width: 100vw;
+        height: 100vh;
+        border-radius: 0;
+        border: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        transform: none;
+    }
+    
+    /* Убираем лишние эффекты */
+    #game-container::before {
+        display: none;
+    }
+    
+    /* Оптимизация UI */
+    #ui-container {
+        top: 5px;
+        left: 5px;
+        padding: 8px 12px;
+        font-size: 14px;
+        background: rgba(0, 14, 36, 0.85);
+    }
+}
+
+/* Плавный переход между экранами */
+.screen-transition {
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+}
+
+.screen-hidden {
+    opacity: 0;
+    transform: scale(0.95);
+    pointer-events: none;
+}
+
+.screen-visible {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+}
+
+/* Адаптивные размеры блоков для мобильных */
+@media (max-width: 768px) {
+    :root {
+        --mobile-block-width: 80px;
+        --mobile-block-height: 30px;
+    }
+}
+
+/* Полноэкранный режим на мобильных */
+@media (max-width: 768px) and (display-mode: fullscreen) {
+    #game-container {
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+        padding-left: env(safe-area-inset-left);
+        padding-right: env(safe-area-inset-right);
+    }
+}
+
+/* Оптимизация для маленьких экранов (iPhone SE и подобные) */
+@media (max-width: 375px) {
+    #start-screen h1 {
+        font-size: 1.6em;
+    }
+    
+    #game-description {
+        font-size: 0.85em;
+    }
+    
+    #start-btn {
+        font-size: 1em;
+        padding: 10px 20px;
+    }
+}
+
+/* Оптимизация для горизонтальной ориентации на мобильных */
+@media (max-width: 768px) and (orientation: landscape) {
+    #start-screen {
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    
+    #start-screen h1 {
+        margin-bottom: 10px;
+    }
+    
+    #game-description {
+        margin-bottom: 15px;
+    }
+    
+    #game-container {
+        height: 100vh;
+    }
+    
+    #ui-container {
+        font-size: 12px;
+        padding: 5px 8px;
+    }
+}
+
+/* Фикс для центрального прямоугольника в описании */
+@media (max-width: 768px) {
+    #game-description {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        border: 1px solid #00eeff;
+        border-left-width: 2px;
+        border-right-width: 2px;
+    }
+}
+
+/* Оптимизация анимаций для мобильных */
+@media (max-width: 768px) {
+    /* Упрощенная анимация появления */
+    #start-screen {
+        animation: fadeIn 0.3s ease-out;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+    
+    /* Плавный переход к игре */
+    .game-start-transition {
+        animation: gameStart 0.5s ease-out forwards;
+    }
+    
+    @keyframes gameStart {
+        0% {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        100% {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.9);
+        }
+    }
+}
+        }
