@@ -1,8 +1,10 @@
+
 body {
     margin: 0;
     padding: 0;
     overflow: hidden;
     height: 100vh;
+    width: 100vw;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -72,6 +74,7 @@ body::after {
     75% { background-position: 75% 25%; }
     100% { background-position: 0% 0%; }
 }
+
 #game-background {
     position: absolute;
     width: 100%;
@@ -80,18 +83,16 @@ body::after {
     background-size: cover; 
     background-position: center;
     background-repeat: no-repeat;
-    z-index: 1; /* Фон на заднем плане */
-    opacity: 0.2; /* Делаем фон менее заметным */
+    z-index: 1;
+    opacity: 0.2;
     pointer-events: none;
 }
 
 /* Game container with planetary ring effect */
 #game-container {
     position: relative;
-    width: 90vw;
-    max-width: 800px;
-    height: 70vh;
-    max-height: 600px;
+    width: min(90vw, 800px);
+    height: min(90vh, 600px);
     background: rgba(0, 3, 20, 0.85);
     border: 2px solid #00eeff;
     border-radius: 20px;
@@ -117,6 +118,7 @@ body::after {
     animation: pulseRing 3s ease-in-out infinite;
     will-change: transform, opacity;
 }
+
 @keyframes pulseRing {
     0% { transform: scale(1); opacity: 0.3; }
     50% { transform: scale(1.03); opacity: 0.6; }
@@ -129,7 +131,7 @@ body::after {
     width: 100%;
     height: 100%;
     image-rendering: pixelated;
-    display: none; /* Initially hidden */
+    display: none;
     z-index: 5;
     opacity: 1 !important;
     background-color: transparent !important;
@@ -142,12 +144,12 @@ body::after {
     left: 10px;
     z-index: 10;
     background: rgba(0, 14, 36, 0.7);
-    padding: 10px 15px;
+    padding: 8px 12px;
     border-radius: 12px;
     border: 2px solid #00eeff;
-    font-size: 18px;
+    font-size: clamp(14px, 2vw, 18px);
     text-shadow: 0 0 6px #00eeff, 0 0 10px #00eeff;
-    display: none; /* Initially hidden */
+    display: none;
     box-shadow: 0 0 10px rgba(0, 238, 255, 0.5) inset;
     backdrop-filter: blur(3px);
     animation: uiGlow 2s ease-in-out infinite alternate;
@@ -166,9 +168,9 @@ body::after {
     transform: translate(-50%, -50%) scale(0.6);
     background: linear-gradient(135deg, #01010d, #040422, #090979);
     border: 3px solid #00b3c6;
-    padding: 30px 50px;
+    padding: clamp(20px, 3vw, 30px) clamp(30px, 4vw, 50px);
     color: #00b3c6;
-    font-size: 48px;
+    font-size: clamp(24px, 5vw, 48px);
     font-weight: bold;
     text-shadow: 0 0 8px #00b3c6, 0 0 16px #00b3c6, 0 0 24px #090979;
     box-shadow: 0 0 20px #00b3c6, inset 0 0 20px #090979;
@@ -180,6 +182,7 @@ body::after {
     text-align: center;
     animation: gameOverAppear 0.8s ease-out forwards;
     opacity: 0;
+    width: min(90vw, 400px);
 }
 
 @keyframes gameOverAppear {
@@ -192,7 +195,7 @@ body::after {
 #final-score {
     margin-top: 15px;
     color: #00b3c6;
-    font-size: 24px;
+    font-size: clamp(18px, 3vw, 24px);
     text-shadow: 0 0 6px #00b3c6, 0 0 12px #00b3c6;
     font-family: 'Orbitron', monospace;
     letter-spacing: 2px;
@@ -206,8 +209,8 @@ body::after {
 
 #restart-btn {
     margin-top: 20px;
-    padding: 14px 28px;
-    font-size: 18px;
+    padding: clamp(10px, 2vw, 14px) clamp(20px, 3vw, 28px);
+    font-size: clamp(14px, 2.5vw, 18px);
     font-family: 'Orbitron', monospace;
     background: linear-gradient(90deg, #0070ff, #004080);
     border: none;
@@ -258,150 +261,29 @@ body::after {
     100% { left: 100%; opacity: 0; }
 }
 
-
-/* Pause button with holographic look */
-#pause-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    padding: 10px 18px;
-    font-size: 16px;
-    font-family: 'Orbitron', monospace;
-    background: rgba(0, 30, 60, 0.5);
-    border: 2px solid #00eeff;
-    color: #00eeff;
-    border-radius: 8px;
-    cursor: pointer;
-    z-index: 10;
-    transition: all 0.3s;
-    text-shadow: 0 0 5px #00eeff;
-    backdrop-filter: blur(5px);
-    box-shadow: 0 0 10px rgba(0, 238, 255, 0.3);
-}
-
-#pause-btn:hover {
-    background: rgba(0, 238, 255, 0.2);
-    box-shadow: 0 0 15px rgba(0, 238, 255, 0.5);
-    transform: translateY(-2px);
-}
-
-#pause-btn:active {
-    transform: translateY(1px);
-}
-
-/* Pause menu with space station theme */
-#pause-menu {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(4, 10, 30, 0.9);
-    border: 3px solid #00eeff;
-    padding: 35px 55px;
-    color: #00eeff;
-    font-size: 32px;
-    text-align: center;
-    display: none;
-    border-radius: 15px;
-    box-shadow: 0 0 20px #00eeff, inset 0 0 20px #0070ff;
-    backdrop-filter: blur(10px);
-    clip-path: polygon(
-        0% 10%, 10% 0%, 90% 0%, 100% 10%, 
-        100% 90%, 90% 100%, 10% 100%, 0% 90%
-    );
-}
-
-/* Buttons inside pause with advanced effects */
-#pause-menu button {
-    margin-top: 25px;
-    padding: 12px 24px;
-    font-size: 18px;
-    font-family: 'Orbitron', monospace;
-    background: linear-gradient(90deg, #00eeff, #0070ff);
-    border: none;
-    color: #000;
-    font-weight: bold;
-    border-radius: 8px;
-    cursor: pointer;
-    box-shadow: 0 0 10px #00eeff;
-    transition: all 0.3s;
-    position: relative;
-    overflow: hidden;
-}
-
-#pause-menu button:hover {
-    background: linear-gradient(90deg, #0070ff, #00eeff);
-    transform: translateY(-3px);
-    box-shadow: 0 0 15px #00eeff, 0 0 5px #0070ff inset;
-}
-
-#pause-menu button:active {
-    transform: translateY(1px);
-}
-
-#pause-menu button::before {
-    content: '';
-    position: absolute;
-    top: -180%;
-    left: -50%;
-    width: 200%;
-    height: 500%;
-    background: linear-gradient(
-        transparent, 
-        rgba(255, 255, 255, 0.1), 
-        transparent
-    );
-    transform: rotate(35deg);
-    transition: 0.6s;
-    opacity: 0;
-}
-
-#pause-menu button:hover::before {
-    animation: buttonScan 1s linear forwards;
-}
-
-@keyframes buttonScan {
-    0% { left: -100%; opacity: 0.7; }
-    100% { left: 100%; opacity: 0; }
-}
-
-/* Mobile adaptations with improved responsiveness */
-@media (max-width: 800px) {
-    body::before, body::after {
-        background-size: 200px 200px;
-    }
-    
-    #start-screen h1 {
-        font-size: 2em;
-    }
-    
-    #game-container::before {
-        animation-duration: 5s;
-    }
-}
-
 /* Enhanced Start Screen with interstellar theme */
 #start-screen {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 90vw;
-    max-width: 600px;
+    width: min(90vw, 600px);
     background: rgba(4, 10, 30, 0.9);
     border: 3px solid #00eeff;
-    padding: 30px 40px;
+    padding: clamp(20px, 3vw, 30px) clamp(20px, 3vw, 40px);
     color: #00eeff;
     text-align: center;
     border-radius: 20px;
     box-shadow: 0 0 20px #00eeff, inset 0 0 20px #0070ff;
     backdrop-filter: blur(10px);
     z-index: 25;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 #start-screen h1 {
-    font-size: 2.5em;
-    margin-bottom: 20px;
+    font-size: clamp(2em, 5vw, 3.5em);
+    margin-bottom: clamp(15px, 2vw, 20px);
     color: #00b3c6;
     text-shadow: 0 0 4px #00b3c6, 0 0 8px #004080;
     letter-spacing: 3px;
@@ -409,35 +291,18 @@ body::after {
     -webkit-text-fill-color: #00b3c6;
 }
 
-
-/* Advanced glow animation for title */
-@keyframes cosmicGlow {
-    0% { 
-        text-shadow: 0 0 10px #00eeff, 0 0 20px #00eeff; 
-        filter: brightness(1) drop-shadow(0 0 8px rgba(0, 238, 255, 0.7));
-    }
-    50% {
-        text-shadow: 0 0 15px #00eeff, 0 0 25px #00eeff, 0 0 35px #0070ff;
-        filter: brightness(1.2) drop-shadow(0 0 12px rgba(0, 238, 255, 0.8));
-    }
-    100% { 
-        text-shadow: 0 0 20px #00eeff, 0 0 30px #00eeff, 0 0 50px #0070ff; 
-        filter: brightness(1.4) drop-shadow(0 0 15px rgba(0, 238, 255, 0.9));
-    }
-}
-
 /* Game description with space theme */
 #game-description {
-    margin-bottom: 35px;
+    margin-bottom: clamp(20px, 3vw, 35px);
     color: #90e0ff;
-    font-size: 1.3em;
+    font-size: clamp(1em, 2.5vw, 1.3em);
     max-width: 90%;
     margin-left: auto;
     margin-right: auto;
     line-height: 1.5;
     text-shadow: 0 0 3px #00eeff;
     position: relative;
-    padding: 15px 20px;
+    padding: clamp(10px, 2vw, 15px) clamp(15px, 2vw, 20px);
     background: rgba(0, 14, 36, 0.4);
     border-radius: 10px;
     border-left: 3px solid #00eeff;
@@ -446,8 +311,8 @@ body::after {
 
 /* Improved start button with particle effects */
 #start-btn {
-    padding: 16px 36px;
-    font-size: 1.6em;
+    padding: clamp(12px, 2vw, 16px) clamp(24px, 3vw, 36px);
+    font-size: clamp(1.2em, 3vw, 1.6em);
     background: linear-gradient(90deg, #00eeff, #007aff);
     border: none;
     color: #000;
@@ -475,74 +340,144 @@ body::after {
     transform: scale(0.98) translateY(-2px);
 }
 
-/* Enhanced shine effect on button */
-#start-btn::before {
-    content: '';
-    position: absolute;
-    top: -200%;
-    left: -200%;
-    width: 500%;
-    height: 500%;
-    background: linear-gradient(
-        45deg, 
-        rgba(255, 255, 255, 0) 0%, 
-        rgba(255, 255, 255, 0.1) 25%, 
-        rgba(255, 255, 255, 0.3) 50%, 
-        rgba(255, 255, 255, 0.1) 75%, 
-        rgba(255, 255, 255, 0) 100%
-    );
-    transform: rotate(45deg);
-    z-index: 1;
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+    body {
+        background-size: 400% 400%;
+    }
+    
+    body::before, body::after {
+        background-size: 150px 150px;
+    }
+    
+    #game-container {
+        width: 95vw;
+        height: 80vh;
+        border-radius: 15px;
+    }
+    
+    #ui-container {
+        padding: 6px 10px;
+        font-size: 14px;
+    }
+    
+    #game-over {
+        width: 85vw;
+        padding: 20px 25px;
+    }
+    
+    #start-screen {
+        width: 95vw;
+        padding: 20px;
+        max-height: 85vh;
+    }
+    
+    #start-screen h1 {
+        font-size: 2em;
+        margin-bottom: 15px;
+    }
+    
+    #game-description {
+        font-size: 1em;
+        padding: 10px 15px;
+        margin-bottom: 20px;
+    }
+    
+    #start-btn {
+        font-size: 1.2em;
+        padding: 12px 24px;
+    }
+    
+    .dock-lines {
+        height: 5px;
+    }
+    
+    /* Убираем эффекты при наведении на мобильных устройствах */
+    #start-btn:hover {
+        transform: none;
+    }
+    
+    #restart-btn:hover {
+        transform: none;
+    }
 }
 
-#start-btn:hover::before {
-    animation: cosmicShine 1.5s forwards;
+/* Extra small devices */
+@media (max-width: 480px) {
+    #start-screen h1 {
+        font-size: 1.8em;
+        letter-spacing: 1px;
+    }
+    
+    #game-description {
+        font-size: 0.9em;
+    }
+    
+    #start-btn {
+        font-size: 1em;
+        padding: 10px 20px;
+    }
+    
+    #game-over {
+        font-size: 24px;
+    }
+    
+    #final-score {
+        font-size: 16px;
+    }
+    
+    #restart-btn {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
 }
 
-@keyframes cosmicShine {
-    0% { left: -200%; }
-    100% { left: 200%; }
+/* Large screens */
+@media (min-width: 1200px) {
+    #game-container {
+        width: 800px;
+        height: 600px;
+    }
+    
+    #ui-container {
+        font-size: 20px;
+        padding: 10px 15px;
+    }
 }
 
-/* Start screen background with nebula effect */
-#start-screen-bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    overflow: hidden;
-    border-radius: 16px;
-    opacity: 0.4;
-    background: 
-        radial-gradient(circle at 30% 20%, rgba(0, 162, 255, 0.3), transparent 50%),
-        radial-gradient(circle at 70% 65%, rgba(106, 0, 255, 0.3), transparent 45%),
-        radial-gradient(circle at 20% 70%, rgba(0, 255, 234, 0.3), transparent 40%);
-    animation: nebulaEffect 20s ease infinite alternate;
+/* Touch device optimizations */
+@media (pointer: coarse) {
+    button {
+        min-height: 44px;
+        min-width: 44px;
+    }
 }
 
-@keyframes nebulaEffect {
-    0% { background-position: 0% 0%; }
-    50% { background-position: 10% 20%; }
-    100% { background-position: -10% -10%; }
+/* Orientation handling */
+@media (orientation: landscape) and (max-height: 500px) {
+    #game-container {
+        height: 90vh;
+    }
+    
+    #start-screen {
+        max-height: 90vh;
+        padding: 15px 20px;
+    }
+    
+    #start-screen h1 {
+        margin-bottom: 10px;
+    }
+    
+    #game-description {
+        margin-bottom: 15px;
+    }
 }
 
-/* Enhanced floating blocks for start screen */
-.floating-block {
-    position: absolute;
-    opacity: 0.3;
-    transition: all 0.5s;
-    filter: drop-shadow(0 0 8px rgba(0, 238, 255, 0.7));
-    border: 1px solid rgba(0, 238, 255, 0.4);
-    background: rgba(0, 30, 60, 0.2);
-    backdrop-filter: blur(2px);
-}
-
-.floating-block:hover {
-    opacity: 0.7;
-    transform: scale(1.1);
-    box-shadow: 0 0 15px rgba(0, 238, 255, 0.5);
+/* High DPI screens */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    canvas {
+        image-rendering: high-quality;
+    }
 }
 
 /* Dock lines with beam scanner effect */
@@ -614,4 +549,53 @@ body::after {
 canvas {
     opacity: 1 !important;
     z-index: 5;
+}
+
+/* Floating blocks for start screen */
+.floating-block {
+    position: absolute;
+    opacity: 0.3;
+    transition: all 0.5s;
+    filter: drop-shadow(0 0 8px rgba(0, 238, 255, 0.7));
+    border: 1px solid rgba(0, 238, 255, 0.4);
+    background: rgba(0, 30, 60, 0.2);
+    backdrop-filter: blur(2px);
+}
+
+.floating-block:hover {
+    opacity: 0.7;
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(0, 238, 255, 0.5);
+}
+
+/* Light beam effect */
+.light-beam {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(to bottom, 
+        transparent 0%, 
+        rgba(0, 238, 255, 0.6) 30%, 
+        rgba(0, 238, 255, 0.8) 50%, 
+        rgba(0, 238, 255, 0.6) 70%, 
+        transparent 100%);
+    animation: beamMove 4s linear infinite;
+    opacity: 0.6;
+}
+
+@keyframes beamMove {
+    0% { transform: translateX(-50%) scaleY(0); }
+    50% { transform: translateX(-50%) scaleY(1); }
+    100% { transform: translateX(-50%) scaleY(0); }
+}
+
+/* Prevent text selection on game elements */
+#game-container, #ui-container, #game-over, #start-screen {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
 }
