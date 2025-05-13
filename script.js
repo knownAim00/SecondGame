@@ -1,15 +1,22 @@
+
+// Функция определения мобильного устройства
+function isMobileDevice() {
+    return window.innerWidth <= 768 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
+// Адаптивные настройки конфигурации
 const config = {
-    blockWidth: 120,
-    blockHeight: 40,
-    craneSpeed: 3,
+    blockWidth: isMobileDevice() ? 80 : 120,
+    blockHeight: isMobileDevice() ? 30 : 40,
+    craneSpeed: isMobileDevice() ? 2.5 : 3,
     craneSpeedIncrease: 0.2,
     craneSpeedIncreaseThreshold: 5,
     groundLevel: 550,
     perfectDropBonus: 50,
-    wobbleThreshold: 2.5, // Degrees
-    craneWidth: 120,
-    craneHeight: 80,
-    stackTolerance: 120 // Maximum horizontal distance between blocks to count as stacked
+    wobbleThreshold: 2.5,
+    craneWidth: isMobileDevice() ? 80 : 120,
+    craneHeight: isMobileDevice() ? 60 : 80,
+    stackTolerance: isMobileDevice() ? 80 : 120
 };
 
 // Game variables
@@ -49,11 +56,17 @@ const restartButton = document.getElementById('restart-btn');
 
 // Set game container and canvas size
 function resizeGame() {
-    const containerWidth = gameContainer.clientWidth;
-    const containerHeight = gameContainer.clientHeight;
+    const isMobile = isMobileDevice();
+    const containerWidth = isMobile ? window.innerWidth : gameContainer.clientWidth;
+    const containerHeight = isMobile ? window.innerHeight : gameContainer.clientHeight;
     
     canvas.width = containerWidth;
     canvas.height = containerHeight;
+    
+    // Адаптируем groundLevel для мобильных
+    if (isMobile) {
+        config.groundLevel = containerHeight - 50;
+    }
     
     // Update the render size
     if (render) {
@@ -336,6 +349,7 @@ function resetGame() {
 }
 
 // Draw the crane properly
+// Обновленная функция drawCrane без анимированной полосы заряда
 function drawCrane(ctx) {
     // Полностью отменяем прозрачность
     ctx.globalAlpha = 1.0;
@@ -445,7 +459,7 @@ function drawCrane(ctx) {
         ctx.fillStyle = blockOnCrane.details;
         ctx.fillRect(x + blockOnCrane.width - portSize - 1, portY + 1, portSize - 2, portSize - 2);
         
-        // Индикатор энергии в центре
+        // Центральный индикатор - СТАТИЧНЫЙ, без анимации
         const indicatorWidth = 20;
         const indicatorHeight = 6;
         const indicatorX = x + (blockOnCrane.width - indicatorWidth) / 2;
@@ -454,12 +468,9 @@ function drawCrane(ctx) {
         ctx.fillStyle = blockOnCrane.stroke;
         ctx.fillRect(indicatorX, indicatorY, indicatorWidth, indicatorHeight);
         
-        // Пульсирующий эффект индикатора - используем синус для анимации
-        const pulse = Math.sin(Date.now() / 200) * 0.5 + 0.5; // значение от 0 до 1
-        const pulseWidth = indicatorWidth * (0.2 + 0.6 * pulse);
-        
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(indicatorX, indicatorY, pulseWidth, indicatorHeight);
+        // Заливаем индикатор полностью цветом деталей
+        ctx.fillStyle = blockOnCrane.details;
+        ctx.fillRect(indicatorX + 1, indicatorY + 1, indicatorWidth - 2, indicatorHeight - 2);
     }
 }
 
@@ -562,15 +573,66 @@ function gameLoop() {
 // Game initialization
 function initGame() {
     const startButton = document.getElementById('start-btn');
+    const isMobile = isMobileDevice();
 
     startButton.addEventListener('click', function() {
-        document.getElementById('start-screen').style.display = 'none';
-        canvas.style.display = 'block';
-        document.getElementById('ui-container').style.display = 'block';
-        document.getElementById('game-background').style.display = 'block';
+        if (isMobile) {
+            // Плавный переход для мобильных
+            const startScreen = document.getElementById('start-screen');
+            startScreen.style.transition = 'opacity 0.3s ease-out, transform 0.3s ease-out';
+            startScreen.style.opacity = '0';
+            startScreen.style.transform = 'translate(-50%, -50%) scale(0.9)';
+            
+            setTimeout(() => {
+                startScreen.style.display = 'none';
+                canvas.style.display = 'block';
+                document.getElementById('ui-container').style.display = 'block';
+                document.getElementById('game-background').style.display = 'block';
+                
+                // Плавное появление игры
+                canvas.style.opacity = '0';
+                setTimeout(() => {
+                    canvas.style.transition = 'opacity 0.3s ease-in';
+                    canvas.style.opacity = '1';
+                }, 50);
+            }, 300);
+        } else {
+            // Стандартный переход для десктопа
+            document.getElementById('start-screen').style.display = 'none';
+            canvas.style.display = 'block';
+            document.getElementById('ui-container').style.display = 'block';
+            document.getElementById('game-background').style.display = 'block';
+        }
     });
     
-    // Установка настроек рендера для более футуристичного вида
+    // Оптимизация для мобильных
+    if (isMobile) {
+        // Упрощаем настройки рендера для мобильных
+        render.options.pixelRatio = 1;
+        engine.world.gravity.y = 0.98;
+        
+        // Предотвращаем двойной тап и зум
+        document.addEventListener('gesturestart', function(e) {
+            e.preventDefault();
+        });
+        
+        // Адаптивные тач-события
+        let touchStartY = 0;
+        canvas.addEventListener('touchstart', function(e) {
+            touchStartY = e.touches[0].clientY;
+            e.preventDefault();
+        });
+        
+        canvas.addEventListener('touchend', function(e) {
+            const touchEndY = e.changedTouches[0].clientY;
+            if (Math.abs(touchEndY - touchStartY) < 10) {
+                dropBlock();
+            }
+            e.preventDefault();
+        });
+    }
+    
+    // Установка настроек рендера
     render.options.wireframes = false;
     render.options.background = 'transparent';
     render.options.showSleeping = false;
@@ -580,6 +642,30 @@ function initGame() {
     createBlockOnCrane();
     updateUI();
     gameLoop();
+    
+    // Input event listeners
+    window.addEventListener('keydown', function(e) {
+        if (e.code === 'Space') {
+            dropBlock();
+            e.preventDefault();
+        }
+    });
+    
+    if (!isMobile) {
+        canvas.addEventListener('click', dropBlock);
+    }
+    
+    restartButton.addEventListener('click', resetGame);
+    
+    window.addEventListener('resize', resizeGame);
+    
+    // Обработка изменения ориентации на мобильных
+    if (isMobile) {
+        window.addEventListener('orientationchange', function() {
+            setTimeout(resizeGame, 100);
+        });
+    }
+
     
     // Input event listeners
     window.addEventListener('keydown', function(e) {
